@@ -779,8 +779,13 @@ function applyParsed(which, det, explicit){
   if(!explicit){
     const headCell = (rows[det.headerIdx] || [])[det.stockCol];
     const meta = detectPriceMeta(headCell);
-    if(meta.sym) compSym = meta.sym;
-    if((meta.price || det.isPrice) && compType === 'stock') compType = 'price';
+    if(meta.price || det.isPrice){
+      compType = 'price';
+      compSym = meta.sym || '€';
+    } else {
+      compType = 'stock';
+      compSym = '';
+    }
   }
   syncCompControls();
   const out = buildOutput(rows, det.headerIdx, det.codeCol, det.nameCol, det.stockCol);
