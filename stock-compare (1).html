@@ -685,7 +685,8 @@ function findNumericColumn(rows, dataStartIdx){
 }
 const CODE_KEYS = ['code','codearticle','reference','ref','sku','codeproduit','articlecode','codebarre','ean','ean13','id','identifiant'];
 const NAME_KEYS = ['designation','nom','name','description','libelle','produit','article','label','libelledesignation'];
-const STOCK_KEYS = ['stock','qte','quantite','quantity','qty','disponible','stockdisponible','kmtdispo','cmdispo','solde','prix','price','montant','amount','tarif','valeur','value','cout','cost'];
+const QUANTITY_KEYS = ['stock','qte','quantite','quantity','qty','disponible','stockdisponible','kmtdispo','cmdispo','solde'];
+const PRICE_KEYS = ['prix','price','tarif','cout','cost','montant','amount','valeur','value'];
 
 function findColumn(headerRow, keys){
   const norm = (headerRow || []).map(normalizeHeader);
@@ -707,13 +708,18 @@ function probeHeader(rows){
     const nonEmpty = r.filter(c => c !== undefined && c !== null && String(c).trim() !== '').length;
     if(nonEmpty < 2) continue;
     const codeCol = findColumn(r, CODE_KEYS);
-    const stockCol = findColumn(r, STOCK_KEYS);
+    let stockCol = findColumn(r, QUANTITY_KEYS);
+    let isPrice = false;
+    if(stockCol === -1){
+      const p = findColumn(r, PRICE_KEYS);
+      if(p !== -1){ stockCol = p; isPrice = true; }
+    }
     const nameCol = findColumn(r, NAME_KEYS);
     const matched = (codeCol !== -1) + (stockCol !== -1) + (nameCol !== -1);
     const score = matched * 1000 + nonEmpty;
-    if(!best || score > best.score) best = { idx:i, codeCol, nameCol, stockCol, cells: r };
+    if(!best || score > best.score) best = { idx:i, codeCol, nameCol, stockCol, isPrice, cells: r };
   }
-  const res = best || { idx:0, codeCol:-1, nameCol:-1, stockCol:-1, cells: rows[0] || [] };
+  const res = best || { idx:0, codeCol:-1, nameCol:-1, stockCol:-1, isPrice:false, cells: rows[0] || [] };
   if(res.stockCol === -1) res.stockCol = findNumericColumn(rows, res.idx + 1);
   return res;
 }
@@ -774,7 +780,7 @@ function applyParsed(which, det, explicit){
     const headCell = (rows[det.headerIdx] || [])[det.stockCol];
     const meta = detectPriceMeta(headCell);
     if(meta.sym) compSym = meta.sym;
-    if(meta.price && compType === 'stock') compType = 'price';
+    if((meta.price || det.isPrice) && compType === 'stock') compType = 'price';
   }
   syncCompControls();
   const out = buildOutput(rows, det.headerIdx, det.codeCol, det.nameCol, det.stockCol);
@@ -831,7 +837,7 @@ function handleFile(file, which){
         document.getElementById('mapBtn' + which).disabled = false;
 
         if(det.codeCol !== -1 && det.stockCol !== -1){
-          applyParsed(which, { headerIdx: det.idx, codeCol: det.codeCol, nameCol: det.nameCol, stockCol: det.stockCol });
+applyParsed(which, { headerIdx: det.idx, codeCol: det.codeCol, nameCol: det.nameCol, stockCol: det.stockCol, isPrice: det.isPrice });
         } else {
           clearSide(which);
           setStatus(which, 'En-tête non reconnu sur la feuille «' + sheetName + '» — configurez les colonnes.', 'err');
@@ -900,7 +906,8 @@ function populateColumnSelects(which, rowIdx){
     o.textContent = '«' + txt.slice(0, 34) + '»' + (txt.length > 34 ? '…' : '') + '  (col. ' + (i + 1) + ')';
     stockEl.appendChild(o);
   });
-  let preStock = findColumn(cells, STOCK_KEYS);
+  let preStock = findColumn(cells, QUANTITY_KEYS);
+  if(preStock === -1) preStock = findColumn(cells, PRICE_KEYS);
   if(preStock === -1) preStock = findNumericColumn(rawSheets[which] || [], rowIdx + 1);
   if(preStock !== -1) stockEl.value = String(preStock);
   syncCompControls();
@@ -1017,7 +1024,7 @@ function loadRowsFromArray(arr, which){
   rawSheets[which] = arr;
   const det = probeHeader(arr);
   probeMeta[which] = det;
-  applyParsed(which, { headerIdx: det.idx, codeCol: det.codeCol, nameCol: det.nameCol, stockCol: det.stockCol });
+  applyParsed(which, { headerIdx: det.idx, codeCol: det.codeCol, nameCol: det.nameCol, stockCol: det.stockCol, isPrice: det.isPrice });
 }
 
 function loadDemo(){
