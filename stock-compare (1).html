@@ -395,6 +395,44 @@
   .modal-btns{display:flex;gap:12px;justify-content:flex-end;}
   .modal-btns button{padding:12px 20px;}
 
+  .help-section{margin-bottom:22px;}
+  .help-section:last-child{margin-bottom:0;}
+  .help-h{
+    font-size:13px;font-weight:700;display:flex;align-items:center;gap:9px;color:var(--ink);
+    margin:0 0 12px;text-transform:uppercase;letter-spacing:.05em;
+  }
+  .help-h .h-ic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none;}
+  .help-h .h-ic.b1{background:var(--teal-bg);color:var(--teal-hi);}
+  .help-h .h-ic.b2{background:var(--purple-bg);color:var(--purple);}
+  .help-h .h-ic.b3{background:var(--amber-bg);color:var(--amber);}
+  .help-copy{font-size:13.5px;color:var(--ink-2);margin:0 0 12px;line-height:1.55;}
+  .help-step{display:flex;gap:11px;align-items:flex-start;margin-bottom:9px;font-size:13.5px;color:var(--ink-2);line-height:1.5;}
+  .help-step:last-child{margin-bottom:0;}
+  .help-step .num{
+    flex:none;width:22px;height:22px;border-radius:6px;background:var(--panel-2);
+    border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;color:var(--ink-soft);
+  }
+  .help-tags{display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+  .help-tag{
+    font-size:12.5px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--line);
+    border-radius:7px;padding:8px 11px;
+  }
+  .help-tag b{color:var(--ink);}
+  .mini-table{width:100%;border-collapse:collapse;font-size:12.5px;margin:2px 0 12px;}
+  .mini-table th{
+    background:var(--panel-2);border:1px solid var(--line);padding:7px 10px;text-align:left;
+    font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);font-weight:700;
+  }
+  .mini-table td{border:1px solid var(--line);padding:7px 10px;color:var(--ink-2);font-family:var(--mono);}
+  .mini-table td.ok{color:var(--green);font-weight:700;}
+  .box-note{border-radius:8px;padding:11px 13px;font-size:12.5px;line-height:1.5;margin-bottom:9px;}
+  .box-note:last-child{margin-bottom:0;}
+  .box-note.ok{background:var(--green-bg);color:var(--ink-2);}
+  .box-note.warn{background:var(--amber-bg);color:var(--ink-2);}
+  .box-note.err{background:var(--red-bg);color:var(--ink-2);}
+  .box-note b{color:var(--ink);}
+
   footer{margin-top:30px;text-align:center;font-size:13px;color:var(--ink-faint);}
   @media print{
     .topbar,.sources,.kdash,.insights,.toolbar,.note,footer,.toast-wrap,.modal-overlay{display:none!important;}
@@ -428,6 +466,7 @@
     <div class="topbar-actions">
       <button class="ghost-btn" id="demoBtn" title="Charger un jeu de données fictif pour tester"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Tester avec un exemple</button>
       <span class="badge">export .xlsx · .csv</span>
+      <button class="icon-btn" id="helpBtn" title="Aide : comment ça marche" aria-label="Aide"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></button>
       <button class="icon-btn" id="themeBtn" title="Basculer le thème (t)" aria-label="Basculer le thème"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
     </div>
   </div>
@@ -526,6 +565,51 @@
   </div>
 
   <p class="note" id="footNote">Astuce : cliquez sur un en-tête de colonne pour trier. Raccourcis : <span class="kbd">/</span> recherche, <span class="kbd">t</span> thème.</p>
+</div>
+
+<div class="modal-overlay" id="helpModal">
+  <div class="modal" style="max-width:680px;">
+    <h3>Aide — Comment utiliser le comparateur</h3>
+    <p class="desc">Tout ce qu'il faut savoir pour comparer deux fichiers Excel ou CSV.</p>
+
+    <div class="help-section">
+      <div class="help-h"><span class="h-ic b1">1</span>Comment ça marche</div>
+      <div class="help-step"><span class="num">1</span><span>Chargez votre <b>Fichier 1</b> dans la zone de gauche, puis le <b>Fichier 2</b> à droite — glisser-déposer ou cliquer.</span></div>
+      <div class="help-step"><span class="num">2</span><span>Les colonnes <b>identifiant</b>, <b>libellé</b> et <b>valeur</b> sont détectées automatiquement. Si besoin, cliquez sur « Ajuster les colonnes… » pour corriger le choix.</span></div>
+      <div class="help-step"><span class="num">3</span><span>Le tableau compare les deux fichiers : lignes <b>communes</b>, <b>uniquement fichier 1</b>, <b>uniquement fichier 2</b>, <b>écarts</b> de valeur et le <b>meilleur côté</b>.</span></div>
+      <div class="help-step"><span class="num">4</span><span>Filtrez avec les pastilles (Tout / Écarts / Égaux…), recherchez avec la touche <span class="kbd">/</span>, triez en cliquant sur les en-têtes de colonnes.</span></div>
+      <div class="help-step"><span class="num">5</span><span>Exportez : <b>Copier</b> dans le presse-papiers, <b>Imprimer</b> / PDF, <b>CSV</b>, ou <b>Excel</b> coloré avec une feuille de résumé.</span></div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-h"><span class="h-ic b2">2</span>Comment préparer votre Excel</div>
+      <p class="help-copy">Idéalement : une <b>ligne d'en-tête</b> en haut, puis une ligne par article. Une ligne de titre (bannière) au-dessus n'est pas un problème : elle est ignorée automatiquement. Exemple :</p>
+      <table class="mini-table">
+        <tr><th>Référence</th><th>Désignation</th><th>Stock Disponible</th></tr>
+        <tr><td>GPU-RTX4060</td><td>GeForce RTX 4060 8GB</td><td class="ok">148</td></tr>
+        <tr><td>CPU-INTEL-13400F</td><td>Intel Core i5-13400F</td><td class="ok">284</td></tr>
+      </table>
+      <p class="help-copy">En-têtes reconnus automatiquement :</p>
+      <div class="help-tags">
+        <span class="help-tag"><b>Identifiant :</b> code, référence, ref, sku, codebarre, ean, identifiant…</span>
+        <span class="help-tag"><b>Libellé :</b> désignation, nom, libellé, description, produit…</span>
+        <span class="help-tag"><b>Valeur stock :</b> stock, quantité, qté, disponible, solde…</span>
+        <span class="help-tag"><b>Valeur prix :</b> prix, prix unitaire HT, tarif, coût…</span>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-h"><span class="h-ic b3">3</span>Bon à savoir</div>
+      <div class="box-note ok"><b>Nombres :</b> les virgules décimales (12,50) et les séparateurs de milliers (1 234,56) sont lus automatiquement.</div>
+      <div class="box-note ok"><b>Devises :</b> si l'en-tête contient « DH », « $ » ou « € » (ex. « Prix Unitaire HT », « Prix DH »), le symbole est détecté automatiquement.</div>
+      <div class="box-note warn"><b>Comparaison :</b> les deux fichiers sont comparés par <b>code produit</b> — le même identifiant doit exister dans les deux fichiers.</div>
+      <div class="box-note err"><b>Une seule valeur :</b> une seule colonne « valeur » est comparée à la fois. Si votre fichier contient Stock ET Prix, la colonne <b>Stock</b> est choisie par défaut. Ouvrez « Ajuster les colonnes… » pour comparer une autre colonne.</div>
+    </div>
+
+    <div class="modal-btns">
+      <button class="primary" id="closeHelp">Compris</button>
+    </div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="exportModal">
@@ -1693,6 +1777,16 @@ document.getElementById('csvBtn').addEventListener('click', () => {
 document.getElementById('themeBtn').addEventListener('click', () => {
   applyTheme(document.documentElement.dataset.theme !== 'dark');
   drawDonut();
+});
+
+document.getElementById('helpBtn').addEventListener('click', () => {
+  document.getElementById('helpModal').classList.add('open');
+});
+document.getElementById('closeHelp').addEventListener('click', () => {
+  document.getElementById('helpModal').classList.remove('open');
+});
+document.getElementById('helpModal').addEventListener('click', e => {
+  if(e.target.id === 'helpModal') document.getElementById('helpModal').classList.remove('open');
 });
 
 document.getElementById('demoBtn').addEventListener('click', loadDemo);
