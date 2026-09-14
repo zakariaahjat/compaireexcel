@@ -571,9 +571,19 @@
       <label for="mapType">Type de comparaison</label>
       <select id="mapType">
         <option value="stock">Stock / Quantité</option>
-        <option value="price">Prix (€)</option>
+        <option value="price">Prix (devise)</option>
         <option value="other">Autre valeur libre</option>
       </select>
+    </div>
+    <div class="map-field" id="mapSymField">
+      <label for="mapSymbol">Devise / unité</label>
+      <select id="mapSymbol">
+        <option value="DH">DH — Dirham marocain</option>
+        <option value="€">€ — Euro</option>
+        <option value="$">$ — Dollar</option>
+        <option value="">— Aucun symbole —</option>
+      </select>
+      <p class="note" style="margin-top:6px;">Le symbole est détecté automatiquement si l'en-tête contient DH, $, €, dirham, dollar… Sinon choisissez-le manuellement.</p>
     </div>
     <div class="modal-btns">
       <button id="cancelMapping">Annuler</button>
@@ -601,6 +611,8 @@ let rawSheets = {};
 let probeMeta = {};
 let mapSide = '1';
 let compType = 'stock';
+let compSym = '';
+const SYMBOL_UNIT = { '€':'euros', 'DH':'dirhams', '$':'dollars' };
 const PAGE = 400;
 
 /* ============================================================
@@ -617,7 +629,16 @@ function compNoun(){
   return compType === 'price' ? 'Prix' : compType === 'other' ? 'Valeur' : 'Stock';
 }
 function compUnit(){
-  return compType === 'price' ? '€' : 'unités';
+  if(compType === 'stock') return 'unités';
+  return SYMBOL_UNIT[compSym] || compSym || 'unités';
+}
+function detectPriceMeta(txt){
+  const s = normalizeHeader(txt || '');
+  if(/\bdirham/.test(s) || /\bdh\b/.test(s) || /\bmad\b/.test(s)) return { sym:'DH', price:true };
+  if(s.includes('dollar') || s.includes('usd') || s.includes('$')) return { sym:'$', price:true };
+  if(s.includes('euro') || s.includes('eur') || s.includes('€')) return { sym:'€', price:true };
+  if(s.includes('prix') || s.includes('price') || s.includes('tarif') || s.includes('cout') || s.includes('cost')) return { sym:'€', price:true };
+  return { sym:'', price:false };
 }
 function parseNumber(v){
   if(v === null || v === undefined || v === '') return NaN;
@@ -746,9 +767,16 @@ function buildOutput(rows, headerIdx, codeCol, nameCol, stockCol){
   return out;
 }
 
-function applyParsed(which, det){
+function applyParsed(which, det, explicit){
   const rows = rawSheets[which];
   if(!rows) return;
+  if(!explicit){
+    const headCell = (rows[det.headerIdx] || [])[det.stockCol];
+    const meta = detectPriceMeta(headCell);
+    if(meta.sym) compSym = meta.sym;
+    if(meta.price && compType === 'stock') compType = 'price';
+  }
+  syncCompControls();
   const out = buildOutput(rows, det.headerIdx, det.codeCol, det.nameCol, det.stockCol);
   if(!out.length){
     setStatus(which, 'En-tête trouvé mais aucune ligne de données  — vérifiez le choix des colonnes.', 'err');
@@ -875,7 +903,22 @@ function populateColumnSelects(which, rowIdx){
   let preStock = findColumn(cells, STOCK_KEYS);
   if(preStock === -1) preStock = findNumericColumn(rawSheets[which] || [], rowIdx + 1);
   if(preStock !== -1) stockEl.value = String(preStock);
-  document.getElementById('mapType').value = compType;
+  syncCompControls();
+}
+
+function syncCompControls(){
+  const t = document.getElementById('mapType');
+  const s = document.getElementById('mapSymbol');
+  if(t) t.value = compType;
+  if(s) s.value = compSym;
+  updateSymField();
+}
+
+function updateSymField(){
+  const field = document.getElementById('mapSymField');
+  const s = document.getElementById('mapSymbol');
+  if(!field || !s) return;
+  field.style.display = compType === 'stock' ? 'none' : '';
 }
 
 function openMapping(which){
@@ -909,13 +952,16 @@ function applyMapping(){
   const nameCol = Number(document.getElementById('mapName').value);
   const stockCol = Number(document.getElementById('mapStock').value);
   compType = document.getElementById('mapType').value;
+  compSym = document.getElementById('mapSymbol').value;
+  if(compType === 'price' && !compSym) compSym = '€';
+  if(compType === 'stock') compSym = '';
   if(Number.isNaN(codeCol) || codeCol < 0 || Number.isNaN(stockCol) || stockCol < 0){
     toast('Sélectionnez une colonne identifiant et une colonne valeur.', 'err');
     return;
   }
   closeMapping();
   document.getElementById('mapBtn' + which).disabled = false;
-  applyParsed(which, {headerIdx, codeCol, nameCol, stockCol});
+  applyParsed(which, {headerIdx, codeCol, nameCol, stockCol}, true);
 
   const other = which === '1' ? '2' : '1';
   if(rawSheets[other] && probeMeta[other] && probeMeta[other].codeCol === -1 && (other === '1' ? !data1 : !data2)){
@@ -1087,7 +1133,7 @@ function fmtInt(n){
   return n.toLocaleString('fr-FR');
 }
 function fmtVal(n){
-  return fmtInt(n) + (compType === 'price' ? ' €' : '');
+  return fmtInt(n) + (compSym ? ' ' + compSym : '');
 }
 
 /* ============================================================
@@ -1646,6 +1692,13 @@ document.getElementById('cancelMapping').addEventListener('click', closeMapping)
 document.getElementById('mappingModal').addEventListener('click', e => { if(e.target.id === 'mappingModal') closeMapping(); });
 document.getElementById('mapHeaderRow').addEventListener('change', () => {
   populateColumnSelects(mapSide, Number(document.getElementById('mapHeaderRow').value));
+});
+document.getElementById('mapType').addEventListener('change', () => {
+  compType = document.getElementById('mapType').value;
+  updateSymField();
+});
+document.getElementById('mapSymbol').addEventListener('change', () => {
+  compSym = document.getElementById('mapSymbol').value;
 });
 
 document.addEventListener('keydown', e => {
