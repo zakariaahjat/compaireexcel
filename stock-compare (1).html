@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comparateur de Stock — Deux fichiers</title>
+<title data-i18n="app_title">Comparateur de Stock — Deux fichiers</title>
 <link rel="icon" type="image/png" href="logocom.png">
 <link rel="apple-touch-icon" href="logocom.png">
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
@@ -116,6 +116,33 @@
   .brand h1{font-size:23px;margin:0;letter-spacing:-0.01em;line-height:1.2;}
   .brand p{margin:2px 0 0;font-size:13.5px;color:var(--ink-soft);}
   .topbar-actions{display:flex;align-items:center;gap:8px;}
+  .lang-select{
+    background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    border-radius:9px;padding:7px 10px;font-family:inherit;font-size:13px;cursor:pointer;
+    outline:none;transition:border-color .15s;max-width:130px;
+  }
+  .lang-select:hover,.lang-select:focus{border-color:var(--teal-hi);}
+  .faq-w{max-height:52vh;overflow-y:auto;padding-right:4px;}
+  .faq-item{margin:0 0 16px;}
+  .faq-item .fq{font-weight:700;font-size:13.5px;cursor:pointer;line-height:1.45;display:flex;gap:8px;align-items:flex-start;}
+  .faq-item .fq::before{content:"▸";flex:none;color:var(--teal);transition:transform .15s;margin-top:2px;}
+  .faq-item.open .fq::before{transform:rotate(90deg);}
+  .faq-item .fa{margin:8px 0 0 18px;font-size:13px;line-height:1.55;color:var(--ink-2);display:none;}
+  .faq-item.open .fa{display:block;}
+  .faq-item.open .fq{color:var(--teal);}
+  .faq-item .faq-q{font-weight:700;font-size:13.5px;cursor:pointer;line-height:1.45;display:flex;gap:8px;align-items:flex-start;}
+  .faq-item .faq-q::before{content:"▸";flex:none;color:var(--teal);transition:transform .15s;margin-top:2px;}
+  .faq-item.open .faq-q::before{transform:rotate(90deg);}
+  .faq-item .faq-a{margin:8px 0 0 18px;font-size:13px;line-height:1.55;color:var(--ink-2);display:none;}
+  .faq-item.open .faq-a{display:block;}
+  .faq-item.open .faq-q{color:var(--teal);}
+  html[dir="rtl"] body{direction:rtl;text-align:right;}
+  html[dir="rtl"] .brand h1,
+  html[dir="rtl"] .brand p,
+  html[dir="rtl"] .topbar-actions,
+  html[dir="rtl"] .topbar-actions button,
+  html[dir="rtl"] .topbar-actions select{text-align:right;}
+  html[dir="rtl"] .lang-select{margin-right:0;margin-left:auto;}
   .icon-btn{
     width:40px;height:40px;border-radius:10px;
     display:flex;align-items:center;justify-content:center;
@@ -283,6 +310,17 @@
   }
   .chip.active .cnt{background:rgba(255,255,255,.2);}
   .toolbar-row2{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .quality-bar{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 18px;padding:11px 14px;background:var(--amber-bg);border:1px solid var(--line);border-radius:10px;font-size:13px;color:var(--ink-2);}
+  .quality-bar.visible{display:flex;}
+  .quality-bar b{color:var(--ink);}
+  .settings-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 18px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;font-size:13px;}
+  .settings-row label{font-weight:700;color:var(--ink-soft);}
+  .settings-row input{width:90px;border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:var(--panel-2);color:var(--ink);font:inherit;}
+  .row-action{padding:5px 8px;font-size:12px;border-radius:6px;white-space:nowrap;}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+  .detail-box{padding:13px;border:1px solid var(--line);border-radius:9px;background:var(--panel-2);font-size:13px;}
+  .detail-box h4{margin:0 0 8px;font-size:13px;}.detail-box p{margin:4px 0;color:var(--ink-soft);}
+  .detail-box b{color:var(--ink);}.note-editor{width:100%;min-height:92px;resize:vertical;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;}
   .count{font-size:14px;color:var(--ink-soft);}
   .count b{color:var(--ink);font-variant-numeric:tabular-nums;}
   .actions{display:flex;gap:8px;flex-wrap:wrap;}
@@ -437,7 +475,9 @@
 
   footer{margin-top:30px;text-align:center;font-size:13px;color:var(--ink-faint);}
   @media print{
-    .topbar,.sources,.kdash,.insights,.toolbar,.note,footer,.toast-wrap,.modal-overlay{display:none!important;}
+    .topbar,.sources,.toolbar,.note,footer,.toast-wrap,.modal-overlay{display:none!important;}
+    .kdash.visible,.insights.visible{display:grid!important;}
+    .quality-bar.visible{display:flex!important;}
     body{background:#fff;color:#1B2733;}
     .wrap{padding:0;}
     .table-shell{border:none;box-shadow:none;}
@@ -461,15 +501,16 @@
     <div class="brand">
       <div class="logo"><img src="logocom.png" alt="Logo"></div>
       <div>
-        <h1>Comparateur de Stock</h1>
-        <p>Deux fichiers Excel, comparés par code produit</p>
+        <h1 data-i18n="app_brand">Comparateur de Stock</h1>
+        <p data-i18n="app_tag">Deux fichiers Excel, comparés par code produit</p>
       </div>
     </div>
     <div class="topbar-actions">
-      <button class="ghost-btn" id="demoBtn" title="Charger un jeu de données fictif pour tester"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Tester avec un exemple</button>
-      <span class="badge">export .xlsx · .csv</span>
-      <button class="icon-btn" id="helpBtn" title="Aide : comment ça marche" aria-label="Aide"><img src="hint.png" alt="Aide" style="width:28px;height:28px;object-fit:contain;border-radius:5px;"></button>
-      <button class="icon-btn" id="themeBtn" title="Basculer le thème (t)" aria-label="Basculer le thème"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
+      <select id="langSelect" class="lang-select" title=""></select>
+      <button class="ghost-btn" id="demoBtn" data-i18n-title="demo_title" title=""><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span data-i18n="demo">Tester avec un exemple</span></button>
+      <span class="badge" data-i18n="badge">export .xlsx · .csv</span>
+      <button class="icon-btn" id="helpBtn" data-i18n-aria="help_aria" data-i18n-title="help_aria" title="Aide" aria-label="Aide"><img src="hint.png" alt="Aide" style="width:28px;height:28px;object-fit:contain;border-radius:5px;"></button>
+      <button class="icon-btn" id="themeBtn" data-i18n-aria="theme_aria" data-i18n-title="theme_aria" title="Basculer le thème (t)" aria-label="Basculer le thème"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
     </div>
   </div>
 </div>
@@ -478,156 +519,200 @@
 
   <div class="sources">
     <div class="source">
-      <h2><span class="dot s1"></span>Fichier 1</h2>
-      <p class="hint">Fichier Excel ou CSV — premier stock à comparer</p>
+      <h2><span class="dot s1"></span><span data-i18n="file1">Fichier 1</span></h2>
+      <p class="hint" data-i18n="f1_hint">Fichier Excel ou CSV — premier stock à comparer</p>
       <label class="drop" id="drop1">
         <input type="file" id="file1" accept=".xlsx,.xls,.csv">
         <div class="upload-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 4h3"/><path d="M12 18v-8M8.5 13.5 12 10l3.5 3.5"/></svg></div>
-        <div class="label">Cliquer ou déposer le fichier ici</div>
-        <div class="sub">xlsx · xls · csv — jusqu'à 50 Mo</div>
+        <div class="label" data-i18n="drop_label">Cliquer ou déposer le fichier ici</div>
+        <div class="sub" data-i18n="drop_sub">xlsx · xls · csv — jusqu'à 50 Mo</div>
         <div class="filename" id="name1"></div>
       </label>
       <div class="status-line" id="status1"><span class="spinner"></span></div>
-      <div class="source-actions"><button class="mini" id="mapBtn1" disabled title="Choisir manuellement les colonnes Code / Nom / Stock">Ajuster les colonnes…</button></div>
+      <div class="source-actions"><button class="mini" id="mapBtn1" disabled data-i18n-title="map_btn_title" title="Choisir manuellement les colonnes Code / Nom / Stock" data-i18n="map_btn">Ajuster les colonnes…</button></div>
     </div>
 
     <div class="source">
-      <h2><span class="dot s2"></span>Fichier 2</h2>
-      <p class="hint">Fichier Excel ou CSV — second stock à comparer</p>
+      <h2><span class="dot s2"></span><span data-i18n="file2">Fichier 2</span></h2>
+      <p class="hint" data-i18n="f2_hint">Fichier Excel ou CSV — second stock à comparer</p>
       <label class="drop" id="drop2">
         <input type="file" id="file2" accept=".xlsx,.xls,.csv">
         <div class="upload-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 4h3"/><path d="M12 18v-8M8.5 13.5 12 10l3.5 3.5"/></svg></div>
-        <div class="label">Cliquer ou déposer le fichier ici</div>
-        <div class="sub">xlsx · xls · csv — jusqu'à 50 Mo</div>
+        <div class="label" data-i18n="drop_label">Cliquer ou déposer le fichier ici</div>
+        <div class="sub" data-i18n="drop_sub">xlsx · xls · csv — jusqu'à 50 Mo</div>
         <div class="filename" id="name2"></div>
       </label>
       <div class="status-line" id="status2"><span class="spinner"></span></div>
-      <div class="source-actions"><button class="mini" id="mapBtn2" disabled title="Choisir manuellement les colonnes Code / Nom / Stock">Ajuster les colonnes…</button></div>
+      <div class="source-actions"><button class="mini" id="mapBtn2" disabled data-i18n-title="map_btn_title" title="Choisir manuellement les colonnes Code / Nom / Stock" data-i18n="map_btn">Ajuster les colonnes…</button></div>
     </div>
   </div>
 
   <div class="kdash" id="kdash">
-    <div class="kpi teal"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></span><div class="k-label">Références totales</div><div class="k-value" id="kpTotal">–</div><div class="k-sub">codes uniques</div></div>
-    <div class="kpi blue"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg></span><div class="k-label">Présents des deux côtés</div><div class="k-value" id="kpBoth">–</div><div class="k-sub" id="kpBothSub"></div></div>
-    <div class="kpi teal"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 0 0 18z"/></svg></span><div class="k-label">Uniquement Fichier 1</div><div class="k-value" id="kpOnly1">–</div><div class="k-sub" id="kpOnly1Sub"></div></div>
-    <div class="kpi purple"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 1 0 18z"/></svg></span><div class="k-label">Uniquement Fichier 2</div><div class="k-value" id="kpOnly2">–</div><div class="k-sub" id="kpOnly2Sub"></div></div>
-    <div class="kpi amber"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M5.5 21h13"/></svg></span><div class="k-label">Écarts</div><div class="k-value" id="kpDiff">–</div><div class="k-sub" id="kpDiffSub"></div></div>
-    <div class="kpi red"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.6v.4"/></svg></span><div class="k-label" id="kpOutLabel">Ruptures</div><div class="k-value" id="kpOut">–</div><div class="k-sub" id="kpOutSub">stock = 0 au moins un côté</div></div>
+    <div class="kpi teal"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></span><div class="k-label" data-i18n="kpi_total">Références totales</div><div class="k-value" id="kpTotal">–</div><div class="k-sub" data-i18n="kpi_total_sub">codes uniques</div></div>
+    <div class="kpi blue"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg></span><div class="k-label" data-i18n="kpi_both">Présents des deux côtés</div><div class="k-value" id="kpBoth">–</div><div class="k-sub" id="kpBothSub"></div></div>
+    <div class="kpi teal"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 0 0 18z"/></svg></span><div class="k-label" data-i18n="kpi_only1">Uniquement Fichier 1</div><div class="k-value" id="kpOnly1">–</div><div class="k-sub" id="kpOnly1Sub"></div></div>
+    <div class="kpi purple"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 1 0 18z"/></svg></span><div class="k-label" data-i18n="kpi_only2">Uniquement Fichier 2</div><div class="k-value" id="kpOnly2">–</div><div class="k-sub" id="kpOnly2Sub"></div></div>
+    <div class="kpi amber"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M5.5 21h13"/></svg></span><div class="k-label" data-i18n="kpi_diff">Écarts</div><div class="k-value" id="kpDiff">–</div><div class="k-sub" id="kpDiffSub"></div></div>
+    <div class="kpi red"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.6v.4"/></svg></span><div class="k-label" id="kpOutLabel">Ruptures</div><div class="k-value" id="kpOut">–</div><div class="k-sub" id="kpOutSub">valeur = 0 au moins un côté</div></div>
   </div>
 
   <div class="insights" id="insights">
     <div class="card">
-      <h3>Répartition « Meilleur côté »</h3>
+      <h3 data-i18n="card_best">Répartition « Meilleur côté »</h3>
       <div class="donut-wrap">
         <svg id="donut" width="220" height="220" viewBox="0 0 42 42"></svg>
         <div class="donut-legend" id="donutLegend"></div>
       </div>
     </div>
     <div class="card">
-      <h3>Points d'attention</h3>
+      <h3 data-i18n="card_attention">Points d'attention</h3>
       <div class="insight-list" id="insightList"></div>
     </div>
   </div>
 
   <div class="toolbar">
+    <div class="settings-row">
+      <label for="warnThreshold">Seuil d'alerte</label><input id="warnThreshold" type="number" min="0" value="5" aria-label="Seuil d'alerte">
+      <label for="gapThreshold">Écart significatif</label><input id="gapThreshold" type="number" min="0" value="20" aria-label="Écart significatif">
+      <button class="mini" id="saveThresholds">Appliquer</button>
+      <span style="color:var(--ink-faint)">Les réglages sont enregistrés sur cet appareil.</span>
+    </div>
     <div class="toolbar-row1">
       <div class="search-box">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-        <input type="text" id="searchInput" placeholder="Rechercher un code ou un nom…">
+        <input type="text" id="searchInput" data-i18n-ph="search_ph" placeholder="Rechercher un code ou un nom…">
       </div>
       <div class="chips" id="chips">
-        <button class="chip active" data-filter="all">Tout <span class="cnt">0</span></button>
-        <button class="chip" data-filter="both">Présents des deux <span class="cnt">0</span></button>
-        <button class="chip" data-filter="only1">Uniq. Fichier 1 <span class="cnt">0</span></button>
-        <button class="chip" data-filter="only2">Uniq. Fichier 2 <span class="cnt">0</span></button>
-        <button class="chip" data-filter="diffs">Écarts <span class="cnt">0</span></button>
-        <button class="chip" data-filter="equal">Égaux <span class="cnt">0</span></button>
+        <button class="chip active" data-filter="all"><span data-i18n="chip_all">Tout</span> <span class="cnt">0</span></button>
+        <button class="chip" data-filter="both"><span data-i18n="chip_both">Présents des deux</span> <span class="cnt">0</span></button>
+        <button class="chip" data-filter="only1"><span data-i18n="chip_only1">Uniq. Fichier 1</span> <span class="cnt">0</span></button>
+        <button class="chip" data-filter="only2"><span data-i18n="chip_only2">Uniq. Fichier 2</span> <span class="cnt">0</span></button>
+        <button class="chip" data-filter="diffs"><span data-i18n="chip_diffs">Écarts</span> <span class="cnt">0</span></button>
+        <button class="chip" data-filter="equal"><span data-i18n="chip_equal">Égaux</span> <span class="cnt">0</span></button>
       </div>
     </div>
     <div class="toolbar-row2">
-      <div class="count" id="rowCount">Aucune donnée chargée</div>
+      <div class="count" id="rowCount" data-i18n="count_loading">Aucune donnée chargée</div>
       <div class="actions">
-        <button id="copyBtn" disabled title="Copier le tableau filtré"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>Copier</button>
-        <button id="printBtn" disabled title="Imprimer / PDF"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimer</button>
-        <button id="csvBtn" disabled title="Exporter les données filtrées"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>CSV</button>
-        <button class="primary" id="downloadBtn" disabled title="Exporter en Excel formaté"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/><path d="M12 18v-6M9.5 14.5 12 12l2.5 2.5"/></svg>Excel</button>
+        <button id="reportBtn" disabled title="Imprimer un rapport synthétique">Rapport</button>
+        <button id="historyBtn" title="Voir l'historique local">Historique</button>
+        <button id="copyBtn" disabled data-i18n-title="tb_copy" title="Copier le tableau filtré"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg><span data-i18n="tb_copy">Copier</span></button>
+        <button id="printBtn" disabled data-i18n-title="tb_print" title="Imprimer / PDF"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span data-i18n="tb_print">Imprimer</span></button>
+        <button id="csvBtn" disabled data-i18n-title="tb_csv" title="Exporter les données filtrées"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>CSV</button>
+        <button class="primary" id="downloadBtn" disabled data-i18n-title="tb_excel" title="Exporter en Excel formaté"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/><path d="M12 18v-6M9.5 14.5 12 12l2.5 2.5"/></svg>Excel</button>
       </div>
     </div>
   </div>
+
+  <div class="quality-bar" id="qualityBar"></div>
 
   <div class="table-shell">
     <div class="table-scroll" id="tableScroll">
       <div id="tableHolder">
         <div class="empty-state">
           <div class="big"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 4h3"/><path d="M12 18v-8M8.5 13.5 12 10l3.5 3.5"/></svg></div>
-          <div>Chargez les deux fichiers (<strong>Fichier 1</strong> et <strong>Fichier 2</strong>) pour afficher la comparaison.<br><br><span style="font-size:12px;">Colonnes détectées automatiquement : code / référence, désignation, quantité. Toute feuille Excel ou CSV fonctionne.</span></div>
+          <div data-i18n-html="empty_hero" style="max-width:640px;margin:auto;">Chargez les deux fichiers (<strong>Fichier 1</strong> et <strong>Fichier 2</strong>) pour afficher la comparaison.<br><br><span style="font-size:12px;">Colonnes détectées automatiquement : code / référence, désignation, quantité. Toute feuille Excel ou CSV fonctionne.</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="note" id="footNote">Astuce : cliquez sur un en-tête de colonne pour trier. Raccourcis : <span class="kbd">/</span> recherche, <span class="kbd">t</span> thème.</p>
+  <p class="note" id="footNote" data-i18n-html="foot_tip">Astuce : cliquez sur un en-tête de colonne pour trier. Raccourcis : <span class="kbd">/</span> recherche, <span class="kbd">t</span> thème.</p>
 </div>
+
+<div class="modal-overlay" id="detailModal"><div class="modal"><h3 id="detailTitle">Détail du produit</h3><div id="detailContent"></div><label for="rowNote" style="font-size:13px;font-weight:700">Note de rapprochement</label><textarea class="note-editor" id="rowNote" placeholder="Ex. vérifié avec le fournisseur…"></textarea><div class="modal-btns"><button id="closeDetail">Fermer</button><button class="primary" id="saveNote">Enregistrer la note</button></div></div></div>
+<div class="modal-overlay" id="historyModal"><div class="modal"><h3>Historique local</h3><p class="desc">Les métadonnées des comparaisons sont conservées uniquement dans ce navigateur.</p><div id="historyList"></div><div class="modal-btns"><button id="clearHistory">Effacer l'historique</button><button class="primary" id="closeHistory">Fermer</button></div></div></div>
 
 <div class="modal-overlay" id="helpModal">
   <div class="modal" style="max-width:680px;">
-    <h3>Aide — Comment utiliser le comparateur</h3>
-    <p class="desc">Tout ce qu'il faut savoir pour comparer deux fichiers Excel ou CSV.</p>
+    <h3 data-i18n="help_title">Aide — Comment utiliser le comparateur</h3>
+    <p class="desc" data-i18n="help_desc">Tout ce qu'il faut savoir pour comparer deux fichiers Excel ou CSV.</p>
 
     <div class="help-section">
-      <div class="help-h"><span class="h-ic b1">1</span>Comment ça marche</div>
-      <div class="help-step"><span class="num">1</span><span>Chargez votre <b>Fichier 1</b> dans la zone de gauche, puis le <b>Fichier 2</b> à droite — glisser-déposer ou cliquer.</span></div>
-      <div class="help-step"><span class="num">2</span><span>Les colonnes <b>identifiant</b>, <b>libellé</b> et <b>valeur</b> sont détectées automatiquement. Si besoin, cliquez sur « Ajuster les colonnes… » pour corriger le choix.</span></div>
-      <div class="help-step"><span class="num">3</span><span>Le tableau compare les deux fichiers : lignes <b>communes</b>, <b>uniquement fichier 1</b>, <b>uniquement fichier 2</b>, <b>écarts</b> de valeur et le <b>meilleur côté</b>.</span></div>
-      <div class="help-step"><span class="num">4</span><span>Filtrez avec les pastilles (Tout / Écarts / Égaux…), recherchez avec la touche <span class="kbd">/</span>, triez en cliquant sur les en-têtes de colonnes.</span></div>
-      <div class="help-step"><span class="num">5</span><span>Exportez : <b>Copier</b> dans le presse-papiers, <b>Imprimer</b> / PDF, <b>CSV</b>, ou <b>Excel</b> coloré avec une feuille de résumé.</span></div>
+      <div class="help-h"><span class="h-ic b1">1</span><span data-i18n="help_s1">Comment ça marche</span></div>
+      <div class="help-step"><span class="num">1</span><span data-i18n-html="help_s1_1">Chargez votre <b>Fichier 1</b> dans la zone de gauche, puis le <b>Fichier 2</b> à droite — glisser-déposer ou cliquer.</span></div>
+      <div class="help-step"><span class="num">2</span><span data-i18n-html="help_s1_2">Les colonnes <b>identifiant</b>, <b>libellé</b> et <b>valeur</b> sont détectées automatiquement. Si besoin, cliquez sur « Ajuster les colonnes… » pour corriger le choix.</span></div>
+      <div class="help-step"><span class="num">3</span><span data-i18n-html="help_s1_3">Le tableau compare les deux fichiers : lignes <b>communes</b>, <b>uniquement fichier 1</b>, <b>uniquement fichier 2</b>, <b>écarts</b> de valeur et le <b>meilleur côté</b>.</span></div>
+      <div class="help-step"><span class="num">4</span><span data-i18n-html="help_s1_4">Filtrez avec les pastilles (Tout / Écarts / Égaux…), recherchez avec la touche <span class="kbd">/</span>, triez en cliquant sur les en-têtes de colonnes.</span></div>
+      <div class="help-step"><span class="num">5</span><span data-i18n-html="help_s1_5">Exportez : <b>Copier</b> dans le presse-papiers, <b>Imprimer</b> / PDF, <b>CSV</b>, ou <b>Excel</b> coloré avec une feuille de résumé.</span></div>
     </div>
 
     <div class="help-section">
-      <div class="help-h"><span class="h-ic b2">2</span>Comment préparer votre Excel</div>
-      <p class="help-copy">Idéalement : une <b>ligne d'en-tête</b> en haut, puis une ligne par article. Une ligne de titre (bannière) au-dessus n'est pas un problème : elle est ignorée automatiquement. Exemple :</p>
+      <div class="help-h"><span class="h-ic b2">2</span><span data-i18n="help_s2">Comment préparer votre Excel</span></div>
+      <p class="help-copy" data-i18n-html="help_s2_copy">Idéalement : une <b>ligne d'en-tête</b> en haut, puis une ligne par article. Une ligne de titre (bannière) au-dessus n'est pas un problème : elle est ignorée automatiquement. Exemple :</p>
       <table class="mini-table">
-        <tr><th>Référence</th><th>Désignation</th><th>Stock Disponible</th><th>Prix Unitaire HT</th></tr>
+        <tr><th data-i18n="help_th_ref">Référence</th><th data-i18n="help_th_name">Désignation</th><th data-i18n="help_th_stock">Stock Disponible</th><th data-i18n="help_th_price">Prix Unitaire HT</th></tr>
         <tr><td>GPU-RTX4060</td><td>GeForce RTX 4060 8GB</td><td class="ok">148</td><td class="ok">1,299.00 DH</td></tr>
         <tr><td>CPU-INTEL-13400F</td><td>Intel Core i5-13400F</td><td class="ok">284</td><td class="ok">189.00 DH</td></tr>
       </table>
-      <p class="help-copy">Dans cet exemple, la colonne <b>Stock Disponible</b> est comparée par défaut. Pour comparer les <b>Prix</b> à la place, ouvrez « Ajuster les colonnes… », choisissez la colonne <b>Prix Unitaire HT</b> comme valeur, puis le type « Prix » — le symbole « DH » est détecté automatiquement.</p>
-      <p class="help-copy">En-têtes reconnus automatiquement :</p>
+      <p class="help-copy" data-i18n-html="help_s2_copy2">Dans cet exemple, la colonne <b>Stock Disponible</b> est comparée par défaut. Pour comparer les <b>Prix</b> à la place, ouvrez « Ajuster les colonnes… », choisissez la colonne <b>Prix Unitaire HT</b> comme valeur, puis le type « Prix » — le symbole « DH » est détecté automatiquement.</p>
+      <p class="help-copy" data-i18n="help_s2_copy3">En-têtes reconnus automatiquement :</p>
       <div class="help-tags">
-        <span class="help-tag"><b>Identifiant :</b> code, référence, ref, sku, codebarre, ean, identifiant…</span>
-        <span class="help-tag"><b>Libellé :</b> désignation, nom, libellé, description, produit…</span>
-        <span class="help-tag"><b>Valeur stock :</b> stock, quantité, qté, disponible, solde…</span>
-        <span class="help-tag"><b>Valeur prix :</b> prix, prix unitaire HT, tarif, coût…</span>
+        <span class="help-tag" data-i18n-html="help_tag_id"><b>Identifiant :</b> code, référence, ref, sku, codebarre, ean, identifiant…</span>
+        <span class="help-tag" data-i18n-html="help_tag_name"><b>Libellé :</b> désignation, nom, libellé, description, produit…</span>
+        <span class="help-tag" data-i18n-html="help_tag_stock"><b>Valeur stock :</b> stock, quantité, qté, disponible, solde…</span>
+        <span class="help-tag" data-i18n-html="help_tag_price"><b>Valeur prix :</b> prix, prix unitaire HT, tarif, coût…</span>
       </div>
     </div>
 
     <div class="help-section">
-      <div class="help-h"><span class="h-ic b3">3</span>Bon à savoir</div>
-      <div class="box-note ok"><b>Nombres :</b> les virgules décimales (12,50) et les séparateurs de milliers (1 234,56) sont lus automatiquement.</div>
-      <div class="box-note ok"><b>Devises :</b> si l'en-tête contient « DH », « $ » ou « € » (ex. « Prix Unitaire HT », « Prix DH »), le symbole est détecté automatiquement.</div>
-      <div class="box-note warn"><b>Comparaison :</b> les deux fichiers sont comparés par <b>code produit</b> — le même identifiant doit exister dans les deux fichiers.</div>
-      <div class="box-note err"><b>Une seule valeur :</b> une seule colonne « valeur » est comparée à la fois. Si votre fichier contient Stock ET Prix, la colonne <b>Stock</b> est choisie par défaut. Ouvrez « Ajuster les colonnes… » pour comparer une autre colonne.</div>
+      <div class="help-h"><span class="h-ic b3">3</span><span data-i18n="help_s3">Bon à savoir</span></div>
+      <div class="box-note ok" data-i18n-html="help_note_num"><b>Nombres :</b> les virgules décimales (12,50) et les séparateurs de milliers (1 234,56) sont lus automatiquement.</div>
+      <div class="box-note ok" data-i18n-html="help_note_cur"><b>Devises :</b> si l'en-tête contient « DH », « $ » ou « € » (ex. « Prix Unitaire HT », « Prix DH »), le symbole est détecté automatiquement.</div>
+      <div class="box-note warn" data-i18n-html="help_note_cmp"><b>Comparaison :</b> les deux fichiers sont comparés par <b>code produit</b> — le même identifiant doit exister dans les deux fichiers.</div>
+      <div class="box-note err" data-i18n-html="help_note_one"><b>Une seule valeur :</b> une seule colonne « valeur » est comparée à la fois. Si votre fichier contient Stock ET Prix, la colonne <b>Stock</b> est choisie par défaut. Ouvrez « Ajuster les colonnes… » pour comparer une autre colonne.</div>
+    </div>
+
+    <div class="help-section" id="faqSection">
+      <div class="help-h"><span class="h-ic b4">4</span><span data-i18n="help_s4">Problèmes fréquents (FAQ)</span></div>
+      <div class="faq-item"><div class="faq-q" data-i18n="faq1_q">Le site ne trouve pas mes colonnes automatiquement.</div><div class="faq-a" data-i18n="faq1_a">Ouvrez « Ajuster les colonnes… », choisissez la ligne d'en-tête, puis la colonne identifiant et la colonne valeur. Faites-le pour chaque fichier.</div></div>
+      <div class="faq-item"><div class="faq-q" data-i18n="faq2_q">Mes prix sont affichés comme du stock (ou l'inverse).</div><div class="faq-a" data-i18n="faq2_a">Le type est détecté d'après le nom de la colonne. Ouvrez « Ajuster les colonnes… » et choisissez « Stock / Quantité » ou « Prix » manuellement.</div></div>
+      <div class="faq-item"><div class="faq-q" data-i18n="faq3_q">Mon fichier dispose de Stock ET de Prix, lequel est comparé ?</div><div class="faq-a" data-i18n-html="faq3_a">Par défaut, la colonne <b>Stock</b>. Pour comparer les prix, choisissez la colonne prix dans « Ajuster les colonnes… ».</div></div>
+      <div class="faq-item"><div class="faq-q" data-i18n="faq4_q">Les prix s'affichent sans symbole ou avec le mauvais symbole.</div><div class="faq-a" data-i18n="faq4_a">Dans « Ajuster les colonnes… », définissez la devise (DH, €, $). Elle est aussi détectée si l'en-tête contient « PRICE DH », « DOLLAR », « € »…</div></div>
+      <div class="faq-item"><div class="faq-q" data-i18n="faq5_q">Une ligne d'en-tête « Prix Unitaire HT » a été lue comme stock.</div><div class="faq-a" data-i18n="faq5_a">La colonne stock est prioritaire. Si aucune colonne quantité n'existe, une colonne prix est utilisée et bascule automatiquement en mode « Prix » avec la bonne devise.</div></div>
+      <div class="faq-item"><div class="faq-q" data-i18n="faq6_q">Les caractères « (1) » sont restés dans mon nom de fichier ?</div><div class="faq-a" data-i18n="faq6_a">Non, seul le contenu du fichier est utilisé. Le nom affiché sert uniquement d'information.</div></div>
+      <div class="faq-item"><div class="faq-q" data-i18n="faq7_q">Mes fichiers sont gros / ma liste est très longue.</div><div class="faq-a" data-i18n="faq7_a">La limite est de 50 Mo par fichier. La liste affiche 400 lignes à la fois : cliquez sur « Afficher la suite » pour en voir plus.</div></div>
+      <div class="faq-item"><div class="faq-q" data-i18n="faq8_q">Comment comparer uniquement les différences ?</div><div class="faq-a" data-i18n="faq8_a">Cliquez sur la pastille « Écarts » au-dessus du tableau, ou choisissez « Uniquement les écarts » lors de l'export Excel.</div></div>
     </div>
 
     <div class="modal-btns">
-      <button class="primary" id="closeHelp">Compris</button>
+      <button class="primary" id="closeHelp" data-i18n="help_close">Compris</button>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="exportModal">
   <div class="modal">
-    <h3>Exporter en Excel</h3>
-    <p class="desc">Choisissez la portée de l'export. Le fichier contient les couleurs (vert / jaune), la colonne « Meilleur côté » et une feuille de résumé.</p>
+    <h3 data-i18n="exp_title">Exporter en Excel</h3>
+    <p class="desc" data-i18n="exp_desc">Choisissez la portée de l'export. Le fichier contient les couleurs (vert / jaune), la colonne « Meilleur côté » et une feuille de résumé.</p>
     <div class="fselect" id="exportScope">
-      <label class="checked"><input type="radio" name="scope" value="filtered" checked>Comparaison complète<small>Lignes comparées (selon le filtre actif)</small></label>
-      <label><input type="radio" name="scope" value="diffs">Uniquement les écarts<small>Lignes dont le stock diffère entre les deux fichiers</small></label>
-      <label><input type="radio" name="scope" value="out">Ruptures uniquement<small>Lignes avec un stock à zéro d'au moins un côté</small></label>
-      <label><input type="radio" name="scope" value="csv">Export CSV simple<small>Fichier .csv — reprend les données filtrées, sans couleurs</small></label>
+      <label class="checked"><input type="radio" name="scope" value="filtered" checked><span data-i18n="exp_filtered">Comparaison complète</span><small data-i18n="exp_filtered_s">Lignes comparées (selon le filtre actif)</small></label>
+      <label><input type="radio" name="scope" value="diffs"><span data-i18n="exp_diffs">Uniquement les écarts</span><small data-i18n="exp_diffs_s">Lignes dont le stock diffère entre les deux fichiers</small></label>
+      <label><input type="radio" name="scope" value="out"><span data-i18n="exp_out">Ruptures uniquement</span><small data-i18n="exp_out_s">Lignes avec un stock à zéro d'au moins un côté</small></label>
+      <label><input type="radio" name="scope" value="csv"><span data-i18n="exp_csv">Export CSV simple</span><small data-i18n="exp_csv_s">Fichier .csv — reprend les données filtrées, sans couleurs</small></label>
     </div>
     <div class="modal-btns">
-      <button id="cancelExport">Annuler</button>
-      <button class="primary" id="confirmExport">Exporter</button>
+      <button id="cancelExport" data-i18n="cancel">Annuler</button>
+      <button class="primary" id="confirmExport" data-i18n="export">Exporter</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="faqModal">
+  <div class="modal" style="max-width:620px;">
+    <h3 data-i18n="help_s4">Problèmes fréquents (FAQ)</h3>
+    <div class="faq-w">
+      <div class="faq-item"><div class="fq" data-i18n="faq1_q">Le site ne trouve pas mes colonnes automatiquement.</div><div class="fa" data-i18n="faq1_a">Ouvrez « Ajuster les colonnes… », choisissez la ligne d'en-tête puis la colonne identifiant et la colonne valeur. Faites-le pour chaque fichier.</div></div>
+      <div class="faq-item"><div class="fq" data-i18n="faq2_q">Mes prix sont affichés comme du stock (ou l'inverse).</div><div class="fa" data-i18n="faq2_a">Le type est détecté d'après le nom de la colonne. Ouvrez « Ajuster les colonnes… » et choisissez « Stock / Quantité » ou « Prix » manuellement.</div></div>
+      <div class="faq-item"><div class="fq" data-i18n="faq3_q">Mon fichier dispose de Stock ET de Prix, lequel est comparé ?</div><div class="fa" data-i18n="faq3_a">Par défaut, la colonne <b>Stock</b>. Pour comparer les prix, ouvrez « Ajuster les colonnes… » et choisissez la colonne prix.</div></div>
+      <div class="faq-item"><div class="fq" data-i18n="faq4_q">Ma feuille détecte « Prix DH » comme si c'était du stock (ou l'inverse).</div><div class="fa" data-i18n="faq4_a">La colonne stock est prioritaire. Si aucune colonne quantité n'existe, une colonne prix est utilisée et bascule automatiquement en mode « Prix ».</div></div>
+      <div class="faq-item"><div class="fq" data-i18n="faq5_q">Les caractères « (1) » sont restés dans mon nom de fichier ?</div><div class="fa" data-i18n="faq5_a">Non, seul le contenu du fichier est utilisé. Le nom affiché sert uniquement d'information.</div></div>
+      <div class="faq-item"><div class="fq" data-i18n="faq6_q">Mes fichiers sont gros / ma liste est très longue.</div><div class="fa" data-i18n="faq6_a">La limite est de 50 Mo par fichier. La liste affiche 400 lignes à la fois : cliquez sur « Afficher la suite » pour en voir plus.</div></div>
+      <div class="faq-item"><div class="fq" data-i18n="faq7_q">Comment comparer uniquement les différences ?</div><div class="fa" data-i18n="faq7_a">Cliquez sur la pastille « Écarts » au-dessus du tableau, ou choisissez « Uniquement les écarts » lors de l'export Excel.</div></div>
+      <div class="faq-item"><div class="fq" data-i18n="faq8_q">Les symbole n'apparaît pas / le mauvais symbole est utilisé.</div><div class="fa" data-i18n="faq8_a">Ouvrez « Ajuster les colonnes… », choisissez le type « Prix » puis la devise (DH, €, $). Le symbole est aussi détecté si l'en-tête contient « PRICE DH », « DOLLAR », « € »…</div></div>
+    </div>
+    <div class="modal-btns">
+      <button class="primary" id="closeFaq" data-i18n="help_close">Compris</button>
     </div>
   </div>
 </div>
@@ -637,25 +722,25 @@
     <h3 id="mapSideTitle">Configurer les colonnes</h3>
     <p class="desc" id="mapDesc">L'en-tête n'a pas été reconnu automatiquement. Sélectionnez la ligne d'en-tête, puis la colonne identifiant, le libellé et la valeur à comparer. Les colonnes correspondent au <b id="mapSideName"></b>.</p>
     <div class="map-field">
-      <label for="mapHeaderRow">Ligne d'en-tête</label>
+      <label for="mapHeaderRow" data-i18n="map_header_label">Ligne d'en-tête</label>
       <select id="mapHeaderRow"></select>
-      <p class="note" style="margin-top:6px;">Astuce : si la ligne d'en-tête proposée est une ligne de titre (« FICHIER DE STOCK… »), choisissez la ligne suivante.</p>
+      <p class="note" style="margin-top:6px;" data-i18n="map_header_note">Astuce : si la ligne d'en-tête proposée est une ligne de titre (« FICHIER DE STOCK… »), choisissez la ligne suivante.</p>
     </div>
     <div class="map-field">
-      <label for="mapCode">Colonne identifiant *</label>
+      <label for="mapCode" data-i18n="map_code_label">Colonne identifiant *</label>
       <select id="mapCode"></select>
     </div>
     <div class="map-field">
-      <label for="mapName">Colonne libellé</label>
+      <label for="mapName" data-i18n="map_name_label">Colonne libellé</label>
       <select id="mapName"></select>
     </div>
     <div class="map-field">
-      <label for="mapStock">Colonne valeur à comparer *</label>
+      <label for="mapStock" data-i18n="map_value_label">Colonne valeur à comparer *</label>
       <select id="mapStock"></select>
-      <p class="note" style="margin-top:6px;">Choisissez n'importe quelle colonne numérique : quantité, stock, prix, poids…</p>
+      <p class="note" style="margin-top:6px;" data-i18n="map_value_note">Choisissez n'importe quelle colonne numérique : quantité, stock, prix, poids…</p>
     </div>
     <div class="map-field">
-      <label for="mapType">Type de comparaison</label>
+      <label for="mapType" data-i18n="map_type_label">Type de comparaison</label>
       <select id="mapType">
         <option value="stock">Stock / Quantité</option>
         <option value="price">Prix (devise)</option>
@@ -663,18 +748,18 @@
       </select>
     </div>
     <div class="map-field" id="mapSymField">
-      <label for="mapSymbol">Devise / unité</label>
+      <label for="mapSymbol" data-i18n="map_symbol_label">Devise / unité</label>
       <select id="mapSymbol">
         <option value="DH">DH — Dirham marocain</option>
         <option value="€">€ — Euro</option>
         <option value="$">$ — Dollar</option>
         <option value="">— Aucun symbole —</option>
       </select>
-      <p class="note" style="margin-top:6px;">Le symbole est détecté automatiquement si l'en-tête contient DH, $, €, dirham, dollar… Sinon choisissez-le manuellement.</p>
+      <p class="note" style="margin-top:6px;" data-i18n="map_symbol_note">Le symbole est détecté automatiquement si l'en-tête contient DH, $, €, dirham, dollar… Sinon choisissez-le manuellement.</p>
     </div>
     <div class="modal-btns">
-      <button id="cancelMapping">Annuler</button>
-      <button class="primary" id="applyMappingBtn">Appliquer</button>
+      <button id="cancelMapping" data-i18n="cancel">Annuler</button>
+      <button class="primary" id="applyMappingBtn" data-i18n="apply">Appliquer</button>
     </div>
   </div>
 </div>
@@ -683,9 +768,498 @@
 
 <script>
 /* ============================================================
-   État global
+   État global & langues
 ============================================================ */
-const SNAME = { '1':'Fichier 1', '2':'Fichier 2' };
+let lang = localStorage.getItem('comp-lang') || 'fr';
+const LANGS = { fr:'Français', en:'English', ar:'العربية' };
+const T = {
+  fr:{
+    app_title:'Comparateur de Stock — Deux fichiers',
+    app_brand:'Comparateur de Stock',
+    app_tag:'Deux fichiers Excel, comparés par code produit',
+    demo:'Tester avec un exemple',
+    demo_title:'Charger un jeu de données fictif pour tester',
+    badge:'export .xlsx · .csv',
+    help_aria:'Aide',
+    theme_aria:'Basculer le thème',
+    lang_aria:'Changer de langue',
+    file1:'Fichier 1', file2:'Fichier 2',
+    f1_hint:'Fichier Excel ou CSV — premier stock à comparer',
+    f2_hint:'Fichier Excel ou CSV — second stock à comparer',
+    drop_label:'Cliquer ou déposer le fichier ici',
+    drop_sub:'xlsx · xls · csv — jusqu\'à 50 Mo',
+    map_btn:'Ajuster les colonnes…',
+    map_btn_title:'Choisir manuellement les colonnes Code / Nom / Stock',
+    demo_tag:'données de test fictives',
+    noun_stock:'Stock', noun_price:'Prix', noun_value:'Valeur',
+    unit_units:'unités', unit_euros:'euros', unit_dirhams:'dirhams', unit_dollars:'dollars',
+    kpi_total:'Références totales', kpi_total_sub:'codes uniques',
+    kpi_both:'Présents des deux côtés',
+    kpi_only1:'Uniquement Fichier 1', kpi_only2:'Uniquement Fichier 2',
+    kpi_diff:'Écarts', kpi_equal_sub:'{n} égalités',
+    kpi_pct_sub:'{p} % du total',
+    kpi_total_sub2:'total {v}',
+    kpi_out_stock:'Ruptures', kpi_out_value:'Valeurs à zéro', kpi_out_sub:'valeur = 0 au moins un côté',
+    card_best:'Répartition « Meilleur côté »', card_attention:'Points d\'attention',
+    donut_r1:'Fichier 1 meilleur', donut_r2:'Fichier 2 meilleur', donut_r3:'Égal', donut_ref:'réf.',
+    search_ph:'Rechercher un code ou un nom…',
+    chip_all:'Tout', chip_both:'Présents des deux', chip_only1:'Uniq. Fichier 1', chip_only2:'Uniq. Fichier 2', chip_diffs:'Écarts', chip_equal:'Égaux',
+    tb_copy:'Copier', tb_print:'Imprimer', tb_csv:'CSV', tb_excel:'Excel',
+    count_loading:'Aucune donnée chargée',
+    count_line:'<b>{shown}</b> ligne(s) sur <b>{total}</b> codes',
+    count_filter:'— filtre ou recherche actif',
+    empty_hero:'Chargez les deux fichiers (<strong>Fichier 1</strong> et <strong>Fichier 2</strong>) pour afficher la comparaison.<br><br><span style="font-size:12px;">Colonnes détectées automatiquement : code / référence, désignation, quantité. Toute feuille Excel ou CSV fonctionne.</span>',
+    empty_auto:'Colonnes détectées automatiquement : code / référence, désignation, quantité. Toute feuille Excel ou CSV fonctionne.',
+    empty_nomatch:'Aucune ligne ne correspond au filtre ou à la recherche.',
+    empty_nocommon:'Les deux fichiers sont chargés, mais aucune référence commune n\'a été trouvée. Cliquez sur « Ajuster les colonnes » pour vérifier les colonnes détectées.',
+    empty_load:'Chargez les deux fichiers pour voir la comparaison.',
+    th_code:'Code', th_name:'Nom', th_diff:'Écart', th_best:'Meilleur', th_avail:'Disponible',
+    file_title:'Fichier 1', file2_title:'Fichier 2',
+    more:'Afficher la suite ({a} / {b})',
+    best_f1:'Fichier 1', best_f2:'Fichier 2', best_eq:'Égal',
+    avail_both:'les deux', avail_1:'Fichier 1', avail_2:'Fichier 2', avail_none:'Aucun',
+    avail_both2:'Les deux', avail_1b:'Fichier 1 seul', avail_2b:'Fichier 2 seul',
+    status_items:'{n} articles chargés · Code={code}{name}, Valeur={val}',
+    status_code:'Code=', status_name:', Nom=', status_value:', Valeur=',
+    status_err_header:'En-tête trouvé mais aucune ligne de données — vérifiez le choix des colonnes.',
+    status_err_empty:'Fichier vide ou illisible.',
+    status_err_big:'Fichier trop volumineux (50 Mo max).',
+    status_err_read:'Impossible de lire ce fichier.',
+    status_reading:'Lecture en cours…',
+    status_err_map:'En-tête non reconnu sur la feuille «{sheet}» — configurez les colonnes.',
+    toast_imported:'{side} : {n} articles importés',
+    toast_mapneed:'Colonnes non détectées pour {side} : configuration manuelle demandée.',
+    toast_nolines:'Aucune ligne lue pour {side} : ouvrez la configuration des colonnes.',
+    toast_empty:'Fichier vide ou illisible.',
+    toast_big:'Fichier illisible : {msg}',
+    toast_needfile:'Chargez d\'abord un fichier pour {side}.',
+    toast_mapincomplete:'Sélectionnez une colonne identifiant et une colonne valeur.',
+    toast_demo:'Données d\'exemple chargées — la ligne de titre a été ignorée automatiquement.',
+    toast_onedone:'Un seul fichier chargé — chargez l\'autre pour comparer.',
+    toast_waiting:'En attente du second fichier pour lancer la comparaison.',
+    toast_excel_ok:'Export Excel généré ({n} lignes).',
+    toast_csv_ok:'Export CSV généré.',
+    toast_noexport:'Aucune donnée à exporter pour cette portée.',
+    toast_noloaded:'Chargez d\'abord les deux fichiers.',
+    toast_copied:'Tableau copié dans le presse-papiers ({n} lignes).',
+    toast_copyfail:'Impossible d\'accéder au presse-papiers.',
+    toast_nocopy:'Aucune donnée à copier.',
+    foot_main:'Export Excel : feuille « Comparaison » colorée (vert = valeur la plus élevée, jaune = la plus basse), feuille « Résumé » avec les statistiques globales.',
+    foot_common:'Fichiers chargés mais aucune référence commune trouvée — ouvrez « Ajuster les colonnes » pour vérifier la détection.',
+    foot_wait:'En attente des données…',
+    foot_tip:'Astuce : cliquez sur un en-tête de colonne pour trier. Raccourcis : <span class="kbd">/</span> recherche, <span class="kbd">t</span> thème.',
+    insight_vol:'Volume global: {who} — <span class="mono">{a}</span> vs <span class="mono">{b}</span> {unit}.',
+    insight_vol_head:'Volume global',
+    insight_vol1:'Fichier 1 détient plus ({r}× le Fichier 2)',
+    insight_vol2:'Fichier 2 détient plus ({r}× le Fichier 1)',
+    insight_out1:'{n} produits en rupture dans le Fichier 1 mais disponibles dans le Fichier 2.',
+    insight_out2:'{n} produits en rupture dans le Fichier 2 mais disponibles dans le Fichier 1.',
+    insight_zero:'{n} références à zéro dans les deux fichiers — à surveiller.',
+    insight_only1:'{n} références existent uniquement dans le Fichier 1.',
+    insight_only2:'{n} références existent uniquement dans le Fichier 2.',
+    insight_gap:'<b>Plus gros écart :</b> <span class="mono">{code}</span> — {winner} a {v} unités de plus.',
+    insight_none:'Aucun point d\'attention particulier détecté.',
+    exp_title:'Exporter en Excel',
+    exp_best:'Meilleur côté',
+    exp_sum_title:'Résumé de la comparaison',
+    exp_gen_on:'Généré le',
+    exp_kpi_label:'Indicateur', exp_kpi_value:'Valeur',
+    exp_kpi_diffs:'Écarts de stock', kpi_equal_sub_plain:'Égalités',
+    exp_kpi_out:'Ruptures (au moins un côté)',
+    exp_sheet1:'Comparaison', exp_sheet2:'Résumé',
+    exp_desc:'Choisissez la portée de l\'export. Le fichier contient les couleurs (vert / jaune), la colonne « Meilleur côté » et une feuille de résumé.',
+    exp_filtered:'Comparaison complète', exp_filtered_s:'Lignes comparées (selon le filtre actif)',
+    exp_diffs:'Uniquement les écarts', exp_diffs_s:'Lignes dont la valeur diffère entre les deux fichiers',
+    exp_out:'Ruptures uniquement', exp_out_s:'Lignes avec une valeur à zéro d\'au moins un côté',
+    exp_csv:'Export CSV simple', exp_csv_s:'Fichier .csv — reprend les données filtrées, sans couleurs',
+    cancel:'Annuler', export:'Exporter',
+    map_side_title:'Configurer les colonnes — {side}',
+    map_side_loaded:'feuille chargée',
+    map_desc:'L\'en-tête n\'a pas été reconnu automatiquement. Sélectionnez la ligne d\'en-tête, puis la colonne identifiant, le libellé et la valeur à comparer. Les colonnes correspondent au ',
+    map_header_label:'Ligne d\'en-tête',
+    map_header_note:'Astuce : si la ligne d\'en-tête proposée est une ligne de titre (« FICHIER DE STOCK… »), choisissez la ligne suivante.',
+    map_code_label:'Colonne identifiant *',
+    map_name_label:'Colonne libellé',
+    map_value_label:'Colonne valeur à comparer *',
+    map_value_note:'Choisissez n\'importe quelle colonne numérique : quantité, stock, prix, poids…',
+    map_ignore:'— Ignorer / pas de colonne —',
+    map_col:'col. {n}',
+    map_type_label:'Type de comparaison',
+    map_type_stock:'Stock / Quantité', map_type_price:'Prix (devise)', map_type_other:'Autre valeur libre',
+    map_symbol_label:'Devise / unité',
+    map_symbol_dh:'DH — Dirham marocain', map_symbol_eur:'€ — Euro', map_symbol_usd:'$ — Dollar', map_symbol_none:'— Aucun symbole —',
+    map_symbol_note:'Le symbole est détecté automatiquement si l\'en-tête contient DH, $, €, dirham, dollar… Sinon choisissez-le manuellement.',
+    apply:'Appliquer',
+    help_title:'Aide — Comment utiliser le comparateur',
+    help_desc:'Tout ce qu\'il faut savoir pour comparer deux fichiers Excel ou CSV.',
+    help_s1:'Comment ça marche',
+    help_s1_1:'Chargez votre <b>Fichier 1</b> dans la zone de gauche, puis le <b>Fichier 2</b> à droite — glisser-déposer ou cliquer.',
+    help_s1_2:'Les colonnes <b>identifiant</b>, <b>libellé</b> et <b>valeur</b> sont détectées automatiquement. Si besoin, cliquez sur « Ajuster les colonnes… » pour corriger le choix.',
+    help_s1_3:'Le tableau compare les deux fichiers : lignes <b>communes</b>, <b>uniquement fichier 1</b>, <b>uniquement fichier 2</b>, <b>écarts</b> de valeur et le <b>meilleur côté</b>.',
+    help_s1_4:'Filtrez avec les pastilles (Tout / Écarts / Égaux…), recherchez avec la touche <span class="kbd">/</span>, triez en cliquant sur les en-têtes de colonnes.',
+    help_s1_5:'Exportez : <b>Copier</b> dans le presse-papiers, <b>Imprimer</b> / PDF, <b>CSV</b>, ou <b>Excel</b> coloré avec une feuille de résumé.',
+    help_s2:'Comment préparer votre Excel',
+    help_s2_copy:'Idéalement : une <b>ligne d\'en-tête</b> en haut, puis une ligne par article. Une ligne de titre (bannière) au-dessus n\'est pas un problème : elle est ignorée automatiquement. Exemple :',
+    help_th_ref:'Référence', help_th_name:'Désignation', help_th_stock:'Stock Disponible', help_th_price:'Prix Unitaire HT',
+    help_s2_copy2:'Dans cet exemple, la colonne <b>Stock Disponible</b> est comparée par défaut. Pour comparer les <b>Prix</b> à la place, ouvrez « Ajuster les colonnes… », choisissez la colonne <b>Prix Unitaire HT</b> comme valeur, puis le type « Prix » — le symbole « DH » est détecté automatiquement.',
+    help_s2_copy3:'En-têtes reconnus automatiquement :',
+    help_tag_id:'<b>Identifiant :</b> code, référence, ref, sku, codebarre, ean, identifiant…',
+    help_tag_name:'<b>Libellé :</b> désignation, nom, libellé, description, produit…',
+    help_tag_stock:'<b>Valeur stock :</b> stock, quantité, qté, disponible, solde…',
+    help_tag_price:'<b>Valeur prix :</b> prix, prix unitaire HT, tarif, coût…',
+    help_s3:'Bon à savoir',
+    help_note_num:'<b>Nombres :</b> les virgules décimales (12,50) et les séparateurs de milliers (1 234,56) sont lus automatiquement.',
+    help_note_cur:'<b>Devises :</b> si l\'en-tête contient « DH », « $ » ou « € » (ex. « Prix Unitaire HT », « Prix DH »), le symbole est détecté automatiquement.',
+    help_note_cmp:'<b>Comparaison :</b> les deux fichiers sont comparés par <b>code produit</b> — le même identifiant doit exister dans les deux fichiers.',
+    help_note_one:'<b>Une seule valeur :</b> une seule colonne « valeur » est comparée à la fois. Si votre fichier contient Stock ET Prix, la colonne <b>Stock</b> est choisie par défaut. Ouvrez « Ajuster les colonnes… » pour comparer une autre colonne.',
+    help_s4:'Problèmes fréquents (FAQ)',
+    faq1_q:'Le site ne trouve pas mes colonnes automatiquement.',
+    faq1_a:'Ouvrez « Ajuster les colonnes… », choisissez la ligne d\'en-tête, puis la colonne identifiant et la colonne valeur. Faites-le pour chaque fichier.',
+    faq2_q:'Mes prix sont affichés comme du stock (ou l\'inverse).',
+    faq2_a:'Le type est détecté d\'après le nom de la colonne. Ouvrez « Ajuster les colonnes… » et choisissez « Stock / Quantité » ou « Prix » manuellement.',
+    faq3_q:'Mon fichier dispose de Stock ET de Prix, lequel est comparé ?',
+    faq3_a:'Par défaut, la colonne <b>Stock</b>. Pour comparer les prix, choisissez la colonne prix dans « Ajuster les colonnes… ».',
+    faq4_q:'Les prix s\'affichent sans symbole ou avec le mauvais symbole.',
+    faq4_a:'Dans « Ajuster les colonnes… », définissez la devise (DH, €, $). Elle est aussi détectée si l\'en-tête contient « PRICE DH », « DOLLAR », « € »…',
+    faq5_q:'Une ligne d\'en-tête « Prix Unitaire HT » a été lue comme stock.',
+    faq5_a:'La colonne stock est prioritaire. Si aucune colonne quantité n\'existe, une colonne prix est utilisée et bascule automatiquement en mode « Prix » avec la bonne devise.',
+    faq6_q:'Les caractères « (1) » sont restés dans mon nom de fichier ?',
+    faq6_a:'Non, seul le contenu du fichier est utilisé. Le nom affiché sert uniquement d\'information.',
+    faq7_q:'Mes fichiers sont gros / ma liste est très longue.',
+    faq7_a:'La limite est de 50 Mo par fichier. La liste affiche 400 lignes à la fois : cliquez sur « Afficher la suite » pour en voir plus.',
+    faq8_q:'Comment comparer uniquement les différences ?',
+    faq8_a:'Cliquez sur la pastille « Écarts » au-dessus du tableau, ou choisissez « Uniquement les écarts » lors de l\'export Excel.',
+    help_close:'Compris'
+  },
+  en:{
+    app_title:'Stock Comparator — Two files',
+    app_brand:'Stock Comparator',
+    app_tag:'Compare two Excel files by product code',
+    demo:'Try with an example',
+    demo_title:'Load dummy test data to try',
+    badge:'export .xlsx · .csv',
+    help_aria:'Help',
+    theme_aria:'Toggle theme',
+    lang_aria:'Change language',
+    file1:'File 1', file2:'File 2',
+    f1_hint:'Excel or CSV file — first stock to compare',
+    f2_hint:'Excel or CSV file — second stock to compare',
+    drop_label:'Click or drop your file here',
+    drop_sub:'xlsx · xls · csv — up to 50 MB',
+    map_btn:'Adjust columns…',
+    map_btn_title:'Manually choose Code / Name / Stock columns',
+    demo_tag:'dummy test data',
+    noun_stock:'Stock', noun_price:'Price', noun_value:'Value',
+    unit_units:'units', unit_euros:'euros', unit_dirhams:'dirhams', unit_dollars:'dollars',
+    kpi_total:'Total references', kpi_total_sub:'unique codes',
+    kpi_both:'Present in both files',
+    kpi_only1:'Only in File 1', kpi_only2:'Only in File 2',
+    kpi_diff:'Differences', kpi_equal_sub:'{n} equal',
+    kpi_pct_sub:'{p} % of total',
+    kpi_total_sub2:'total {v}',
+    kpi_out_stock:'Out of stock', kpi_out_value:'Zero values', kpi_out_sub:'value = 0 on at least one side',
+    card_best:'"Better side" breakdown', card_attention:'Points of attention',
+    donut_r1:'File 1 better', donut_r2:'File 2 better', donut_r3:'Equal', donut_ref:'ref.',
+    search_ph:'Search by code or name…',
+    chip_all:'All', chip_both:'In both', chip_only1:'Only File 1', chip_only2:'Only File 2', chip_diffs:'Differences', chip_equal:'Equal',
+    tb_copy:'Copy', tb_print:'Print', tb_csv:'CSV', tb_excel:'Excel',
+    count_loading:'No data loaded',
+    count_line:'<b>{shown}</b> row(s) out of <b>{total}</b> codes',
+    count_filter:'— filter or search active',
+    empty_hero:'Load both files (<strong>File 1</strong> and <strong>File 2</strong>) to see the comparison.<br><br><span style="font-size:12px;">Columns detected automatically: code / reference, designation, quantity. Any Excel or CSV sheet works.</span>',
+    empty_auto:'Columns detected automatically: code / reference, designation, quantity. Any Excel or CSV sheet works.',
+    empty_nomatch:'No row matches the filter or search.',
+    empty_nocommon:'Both files are loaded, but no common reference was found. Click "Adjust columns" to check the detected columns.',
+    empty_load:'Load both files to see the comparison.',
+    th_code:'Code', th_name:'Name', th_diff:'Diff', th_best:'Best', th_avail:'Available',
+    file_title:'File 1', file2_title:'File 2',
+    more:'Show more ({a} / {b})',
+    best_f1:'File 1', best_f2:'File 2', best_eq:'Equal',
+    avail_both:'both', avail_1:'File 1', avail_2:'File 2', avail_none:'None',
+    avail_both2:'Both', avail_1b:'File 1 only', avail_2b:'File 2 only',
+    status_items:'{n} items loaded · Code={code}{name}, Value={val}',
+    status_code:'Code=', status_name:', Name=', status_value:', Value=',
+    status_err_header:'Header found but no data rows — check the column selection.',
+    status_err_empty:'Empty or unreadable file.',
+    status_err_big:'File too large (max 50 MB).',
+    status_err_read:'Cannot read this file.',
+    status_reading:'Reading…',
+    status_err_map:'Header not recognized on sheet "{sheet}" — configure the columns.',
+    toast_imported:'{side}: {n} items imported',
+    toast_mapneed:'Columns not detected for {side}: manual configuration required.',
+    toast_nolines:'No rows read for {side}: open the column configuration.',
+    toast_empty:'Empty or unreadable file.',
+    toast_big:'Unreadable file: {msg}',
+    toast_needfile:'Load a file first for {side}.',
+    toast_mapincomplete:'Select an identifier column and a value column.',
+    toast_demo:'Example data loaded — the title row was skipped automatically.',
+    toast_onedone:'Only one file loaded — load the other one to compare.',
+    toast_waiting:'Waiting for the second file to start the comparison.',
+    toast_excel_ok:'Excel export generated ({n} rows).',
+    toast_csv_ok:'CSV export generated.',
+    toast_noexport:'Nothing to export for this scope.',
+    toast_noloaded:'Load both files first.',
+    toast_copied:'Table copied to clipboard ({n} rows).',
+    toast_copyfail:'Cannot access the clipboard.',
+    toast_nocopy:'No data to copy.',
+    foot_main:'Excel export: colored "Comparison" sheet (green = highest value, yellow = lowest), "Summary" sheet with global statistics.',
+    foot_common:'Files loaded but no common reference found — open "Adjust columns" to check the detection.',
+    foot_wait:'Waiting for data…',
+    foot_tip:'Tip: click a column header to sort. Shortcuts: <span class="kbd">/</span> search, <span class="kbd">t</span> theme.',
+    insight_vol:'Overall volume: {who} — <span class="mono">{a}</span> vs <span class="mono">{b}</span> {unit}.',
+    insight_vol_head:'Overall volume',
+    insight_vol1:'File 1 holds more ({r}× File 2)',
+    insight_vol2:'File 2 holds more ({r}× File 1)',
+    insight_out1:'{n} products out of stock in File 1 but available in File 2.',
+    insight_out2:'{n} products out of stock in File 2 but available in File 1.',
+    insight_zero:'{n} references at zero in both files — watch out.',
+    insight_only1:'{n} references exist only in File 1.',
+    insight_only2:'{n} references exist only in File 2.',
+    insight_gap:'<b>Biggest difference:</b> <span class="mono">{code}</span> — {winner} has {v} more units.',
+    insight_none:'No particular point of attention detected.',
+    exp_title:'Export to Excel',
+    exp_best:'Better side',
+    exp_sum_title:'Comparison summary',
+    exp_gen_on:'Generated on',
+    exp_kpi_label:'Indicator', exp_kpi_value:'Value',
+    exp_kpi_diffs:'Stock differences', kpi_equal_sub_plain:'Equalities',
+    exp_kpi_out:'Out of stock (at least one side)',
+    exp_sheet1:'Comparison', exp_sheet2:'Summary',
+    exp_desc:'Choose the scope of the export. The file contains colors (green / yellow), the "Better side" column and a summary sheet.',
+    exp_filtered:'Full comparison', exp_filtered_s:'Compared rows (according to the active filter)',
+    exp_diffs:'Differences only', exp_diffs_s:'Rows whose value differs between the two files',
+    exp_out:'Zeros only', exp_out_s:'Rows with a zero value on at least one side',
+    exp_csv:'Simple CSV export', exp_csv_s:'.csv file — takes the filtered data, without colors',
+    cancel:'Cancel', export:'Export',
+    map_side_title:'Configure columns — {side}',
+    map_side_loaded:'loaded sheet',
+    map_desc:'The header was not recognized automatically. Select the header row, then the identifier column, the label and the value to compare. The columns belong to ',
+    map_header_label:'Header row',
+    map_header_note:'Tip: if the proposed header row is a title row ("STOCK FILE…"), choose the next row.',
+    map_code_label:'Identifier column *',
+    map_name_label:'Label column',
+    map_value_label:'Value column to compare *',
+    map_value_note:'Choose any numeric column: quantity, stock, price, weight…',
+    map_ignore:'— Ignore / no column —',
+    map_col:'col. {n}',
+    map_type_label:'Comparison type',
+    map_type_stock:'Stock / Quantity', map_type_price:'Price (currency)', map_type_other:'Other free value',
+    map_symbol_label:'Currency / unit',
+    map_symbol_dh:'DH — Moroccan dirham', map_symbol_eur:'€ — Euro', map_symbol_usd:'$ — Dollar', map_symbol_none:'— No symbol —',
+    map_symbol_note:'The symbol is auto-detected if the header contains DH, $, €, dirham, dollar… Otherwise choose it manually.',
+    apply:'Apply',
+    help_title:'Help — How to use the comparator',
+    help_desc:'Everything you need to compare two Excel or CSV files.',
+    help_s1:'How it works',
+    help_s1_1:'Load your <b>File 1</b> in the left zone, then <b>File 2</b> on the right — drag & drop or click.',
+    help_s1_2:'The <b>identifier</b>, <b>label</b> and <b>value</b> columns are detected automatically. If needed, click "Adjust columns…" to fix the choice.',
+    help_s1_3:'The table compares both files: <b>common</b> rows, <b>only in file 1</b>, <b>only in file 2</b>, value <b>differences</b> and the <b>better side</b>.',
+    help_s1_4:'Filter with the pills (All / Differences / Equal…), search with the <span class="kbd">/</span> key, sort by clicking the column headers.',
+    help_s1_5:'Export: <b>Copy</b> to clipboard, <b>Print</b> / PDF, <b>CSV</b>, or a colored <b>Excel</b> with a summary sheet.',
+    help_s2:'How to prepare your Excel',
+    help_s2_copy:'Ideally: a <b>header row</b> on top, then one row per item. A title (banner) row above is fine: it is skipped automatically. Example:',
+    help_th_ref:'Reference', help_th_name:'Designation', help_th_stock:'Stock Available', help_th_price:'Unit Price excl. Tax',
+    help_s2_copy2:'In this example, the <b>Stock Available</b> column is compared by default. To compare <b>Prices</b> instead, open "Adjust columns…", choose the <b>Unit Price</b> column as value, then type "Price" — the "DH" symbol is detected automatically.',
+    help_s2_copy3:'Headers recognized automatically:',
+    help_tag_id:'<b>Identifier:</b> code, reference, ref, sku, barcode, ean, id…',
+    help_tag_name:'<b>Label:</b> designation, name, label, description, product…',
+    help_tag_stock:'<b>Stock value:</b> stock, quantity, qty, available, balance…',
+    help_tag_price:'<b>Price value:</b> price, unit price, tariff, cost…',
+    help_s3:'Good to know',
+    help_note_num:'<b>Numbers:</b> decimal commas (12.50) and thousands separators (1 234.56) are read automatically.',
+    help_note_cur:'<b>Currencies:</b> if the header contains "DH", "$" or "€" (e.g. "Unit Price", "Price DH"), the symbol is auto-detected.',
+    help_note_cmp:'<b>Comparison:</b> both files are compared by <b>product code</b> — the same identifier must exist in both files.',
+    help_note_one:'<b>One value only:</b> only one "value" column is compared at a time. If your file has Stock AND Price, the <b>Stock</b> column is chosen by default. Open "Adjust columns…" to compare another column.',
+    help_s4:'Frequent problems (FAQ)',
+    faq1_q:'The site does not find my columns automatically.',
+    faq1_a:'Open "Adjust columns…", choose the header row, then the identifier and value columns. Do it for each file.',
+    faq2_q:'My prices are displayed as stock (or the other way round).',
+    faq2_a:'The type is detected from the column name. Open "Adjust columns…" and choose "Stock / Quantity" or "Price" manually.',
+    faq3_q:'My file has both Stock and Price — which one is compared?',
+    faq3_a:'By default, the <b>Stock</b> column. To compare prices, choose the price column in "Adjust columns…".',
+    faq4_q:'Prices are shown without a symbol or with the wrong one.',
+    faq4_a:'In "Adjust columns…", set the currency (DH, €, $). It is also detected if the header contains "PRICE DH", "DOLLAR", "€"…',
+    faq5_q:'A "Unit Price" header was read as stock.',
+    faq5_a:'The stock column has priority. If no quantity column exists, a price column is used and automatically switches to "Price" mode with the right currency.',
+    faq6_q:'The characters "(1)" stayed in my file name?',
+    faq6_a:'No — only the file content is used. The displayed name is just for information.',
+    faq7_q:'My files are big / my list is very long.',
+    faq7_a:'The limit is 50 MB per file. The list shows 400 rows at a time: click "Show more" to load more.',
+    faq8_q:'How do I compare only the differences?',
+    faq8_a:'Click the "Differences" pill above the table, or choose "Differences only" when exporting to Excel.',
+    help_close:'Got it'
+  },
+  ar:{
+    app_title:'مقارنة المخزون — ملفان',
+    app_brand:'مقارنة المخزون',
+    app_tag:'قارِن ملفّي إكسل برمز المنتج',
+    demo:'جرّب بمثال',
+    demo_title:'تحميل بيانات اختبار تجريبية للتجربة',
+    badge:'تصدير .xlsx · .csv',
+    help_aria:'مساعدة',
+    theme_aria:'تبديل المظهر',
+    lang_aria:'تغيير اللغة',
+    file1:'الملف 1', file2:'الملف 2',
+    f1_hint:'ملف إكسل أو CSV — المخزون الأول للمقارنة',
+    f2_hint:'ملف إكسل أو CSV — المخزون الثاني للمقارنة',
+    drop_label:'انقر أو اسحب الملف هنا',
+    drop_sub:'xlsx · xls · csv — حتى 50 ميغا',
+    map_btn:'ضبط الأعمدة…',
+    map_btn_title:'اختيار أعمدة الكود/الاسم/المخزون يدويًا',
+    demo_tag:'بيانات اختبار تجريبية',
+    noun_stock:'المخزون', noun_price:'السعر', noun_value:'القيمة',
+    unit_units:'وحدة', unit_euros:'يورو', unit_dirhams:'درهم', unit_dollars:'دولار',
+    kpi_total:'إجمالي المراجع', kpi_total_sub:'أكواد فريدة',
+    kpi_both:'موجودة في الملفين',
+    kpi_only1:'فقط في الملف 1', kpi_only2:'فقط في الملف 2',
+    kpi_diff:'الفروقات', kpi_equal_sub:'{n} متساوية',
+    kpi_pct_sub:'{p} % من الإجمالي',
+    kpi_total_sub2:'الإجمالي {v}',
+    kpi_out_stock:'نفاد المخزون', kpi_out_value:'قيم صفرية', kpi_out_sub:'القيمة = 0 في جهة واحدة على الأقل',
+    card_best:'توزيع «الطرف الأفضل»', card_attention:'نقاط الانتباه',
+    donut_r1:'الملف 1 أفضل', donut_r2:'الملف 2 أفضل', donut_r3:'متساوية', donut_ref:'مرجع',
+    search_ph:'ابحث برمز أو اسم…',
+    chip_all:'الكل', chip_both:'في الملفين', chip_only1:'فقط ملف 1', chip_only2:'فقط ملف 2', chip_diffs:'الفروقات', chip_equal:'متساوية',
+    tb_copy:'نسخ', tb_print:'طباعة', tb_csv:'CSV', tb_excel:'Excel',
+    count_loading:'لا توجد بيانات محمّلة',
+    count_line:'<b>{shown}</b> صف من <b>{total}</b> أكواد',
+    count_filter:'— عامل تصفية أو بحث نشط',
+    empty_hero:'حمّل الملفين (<strong>الملف 1</strong> و<strong>الملف 2</strong>) لعرض المقارنة.<br><br><span style="font-size:12px;">يتم اكتشاف الأعمدة تلقائيًا: الكود/المرجع، التعيين، الكمية. أي ورقة إكسل أو CSV تعمل.</span>',
+    empty_auto:'يتم اكتشاف الأعمدة تلقائيًا: الكود/المرجع، التعيين، الكمية. أي ورقة إكسل أو CSV تعمل.',
+    empty_nomatch:'لا يوجد صف يطابق عامل التصفية أو البحث.',
+    empty_nocommon:'تم تحميل الملفين لكن لم يُعثر على مرجع مشترك. انقر على «ضبط الأعمدة» للتأكد.',
+    empty_load:'حمّل الملفين لعرض المقارنة.',
+    th_code:'الكود', th_name:'الاسم', th_diff:'الفرق', th_best:'الأفضل', th_avail:'متاح',
+    file_title:'الملف 1', file2_title:'الملف 2',
+    more:'عرض المزيد ({a} / {b})',
+    best_f1:'الملف 1', best_f2:'الملف 2', best_eq:'متساوٍ',
+    avail_both:'كلاهما', avail_1:'الملف 1', avail_2:'الملف 2', avail_none:'لا شيء',
+    avail_both2:'كلاهما', avail_1b:'الملف 1 فقط', avail_2b:'الملف 2 فقط',
+    status_items:'{n} عنصر محمّل · الكود={code}{name}, القيمة={val}',
+    status_code:'الكود=', status_name:'، الاسم=', status_value:'، القيمة=',
+    status_err_header:'تم العثور على الترويسة لكن لا توجد صفوف بيانات — تحقق من اختيار الأعمدة.',
+    status_err_empty:'الملف فارغ أو غير قابل للقراءة.',
+    status_err_big:'الملف كبير جدًا (الحد الأقصى 50 ميغا).',
+    status_err_read:'تعذّر قراءة هذا الملف.',
+    status_reading:'جارٍ القراءة…',
+    status_err_map:'الترويسة غير معرَّفة في الورقة «{sheet}» — اضبط الأعمدة.',
+    toast_imported:'{side}: تم استيراد {n} عنصر',
+    toast_mapneed:'لم يتم اكتشاف الأعمدة لـ {side}: يلزم إعداد يدوي.',
+    toast_nolines:'لا توجد صفوف مقروءة لـ {side}: افتح إعداد الأعمدة.',
+    toast_empty:'الملف فارغ أو غير قابل للقراءة.',
+    toast_big:'ملف غير قابل للقراءة: {msg}',
+    toast_needfile:'حمّل ملفًا أولاً لـ {side}.',
+    toast_mapincomplete:'اختر عمود المعرّف وعمود القيمة.',
+    toast_demo:'تم تحميل بيانات المثال — تخطّى سطر العنوان تلقائيًا.',
+    toast_onedone:'تم تحميل ملف واحد فقط — حمّل الآخر للمقارنة.',
+    toast_waiting:'في انتظار الملف الثاني لبدء المقارنة.',
+    toast_excel_ok:'تم إنشاء تصدير Excel ({n} صفًا).',
+    toast_csv_ok:'تم إنشاء تصدير CSV.',
+    toast_noexport:'لا توجد بيانات للتصدير ضمن هذا النطاق.',
+    toast_noloaded:'حمّل الملفين أولاً.',
+    toast_copied:'تم نسخ الجدول إلى الحافظة ({n} صفًا).',
+    toast_copyfail:'تعذّر الوصول إلى الحافظة.',
+    toast_nocopy:'لا توجد بيانات للنسخ.',
+    foot_main:'تصدير Excel: ورقة «المقارنة» ملوّنة (أخضر = أعلى قيمة، أصفر = أدنى قيمة)، وورقة «الملخص» بالإحصائيات.',
+    foot_common:'تم تحميل الملفين لكن لا يوجد مرجع مشترك — افتح «ضبط الأعمدة» للتحقق.',
+    foot_wait:'في انتظار البيانات…',
+    foot_tip:'نصيحة: انقر على رأس عمود للفرز. اختصارات: <span class="kbd">/</span> بحث، <span class="kbd">t</span> مظهر.',
+    insight_vol:'الحجم الإجمالي: {who} — <span class="mono">{a}</span> مقابل <span class="mono">{b}</span> {unit}.',
+    insight_vol_head:'الحجم الإجمالي',
+    insight_vol1:'الملف 1 يحتفظ بأكثر ({r}× الملف 2)',
+    insight_vol2:'الملف 2 يحتفظ بأكثر ({r}× الملف 1)',
+    insight_out1:'{n} منتجات نفد مخزونها في الملف 1 لكنها متوفرة في الملف 2.',
+    insight_out2:'{n} منتجات نفد مخزونها في الملف 2 لكنها متوفرة في الملف 1.',
+    insight_zero:'{n} مراجع بصفر في الملفين — انتبه.',
+    insight_only1:'{n} مراجع موجودة فقط في الملف 1.',
+    insight_only2:'{n} مراجع موجودة فقط في الملف 2.',
+    insight_gap:'<b>أكبر فرق:</b> <span class="mono">{code}</span> — {winner} لديها {v} وحدة إضافية.',
+    insight_none:'لم يتم رصد أي نقطة انتباه خاصة.',
+    exp_title:'تصدير إلى Excel',
+    exp_best:'الطرف الأفضل',
+    exp_sum_title:'ملخص المقارنة',
+    exp_gen_on:'أُنشئ في',
+    exp_kpi_label:'المؤشر', exp_kpi_value:'القيمة',
+    exp_kpi_diffs:'فروقات المخزون', kpi_equal_sub_plain:'متساوية',
+    exp_kpi_out:'نفاد المخزون (جهة واحدة على الأقل)',
+    exp_sheet1:'المقارنة', exp_sheet2:'الملخص',
+    exp_desc:'اختر نطاق التصدير. يحتوي الملف على ألوان (أخضر/أصفر)، وعمود «الطرف الأفضل» وورقة ملخص.',
+    exp_filtered:'المقارنة الكاملة', exp_filtered_s:'الصفوف المقارنة (حسب عامل التصفية النشط)',
+    exp_diffs:'الفروقات فقط', exp_diffs_s:'الصفوف التي تختلف قيمتها بين الملفين',
+    exp_out:'القيم الصفرية فقط', exp_out_s:'الصفوف بقيمة صفرية في جهة واحدة على الأقل',
+    exp_csv:'تصدير CSV بسيط', exp_csv_s:'ملف .csv — يأخذ البيانات المصفّاة، بدون ألوان',
+    cancel:'إلغاء', export:'تصدير',
+    map_side_title:'ضبط الأعمدة — {side}',
+    map_side_loaded:'الورقة المحمّلة',
+    map_desc:'لم يتم التعرف على الترويسة تلقائيًا. اختر سطر الترويسة، ثم عمود المعرّف والتعيين والقيمة للمقارنة. الأعمدة تخص ',
+    map_header_label:'سطر الترويسة',
+    map_header_note:'نصيحة: إذا كان سطر الترويسة المقترح هو سطر عنوان (مثل «ملف المخزون…»)، اختر السطر التالي.',
+    map_code_label:'عمود المعرّف *',
+    map_name_label:'عمود التعيين',
+    map_value_label:'عمود القيمة للمقارنة *',
+    map_value_note:'اختر أي عمود رقمي: كمية، مخزون، سعر، وزن…',
+    map_ignore:'— تجاهل / بدون عمود —',
+    map_col:'العمود {n}',
+    map_type_label:'نوع المقارنة',
+    map_type_stock:'مخزون / كمية', map_type_price:'سعر (عملة)', map_type_other:'قيمة حرة أخرى',
+    map_symbol_label:'العملة / الوحدة',
+    map_symbol_dh:'درهم مغربي DH', map_symbol_eur:'€ — يورو', map_symbol_usd:'$ — دولار', map_symbol_none:'— بدون رمز —',
+    map_symbol_note:'يتم اكتشاف الرمز تلقائيًا إذا احتوت الترويسة على DH أو $ أو € أو درهم أو دولار… وإلا اختره يدويًا.',
+    apply:'تطبيق',
+    help_title:'مساعدة — كيفية استخدام المقارنة',
+    help_desc:'كل ما تحتاجه لمقارنة ملفي إكسل أو CSV.',
+    help_s1:'كيف تعمل',
+    help_s1_1:'حمّل <b>الملف 1</b> في المنطقة اليسرى ثم <b>الملف 2</b> على اليمين — اسحب وأفلت أو انقر.',
+    help_s1_2:'يتم اكتشاف أعمدة <b>المعرّف</b> و<b>التعيين</b> و<b>القيمة</b> تلقائيًا. إذا لزم، انقر «ضبط الأعمدة…» لتصحيح الاختيار.',
+    help_s1_3:'يقارن الجدول الملفين: صفوف <b>مشتركة</b>، <b>فقط في الملف 1</b>، <b>فقط في الملف 2</b>، <b>فروقات</b> القيمة و<b>الطرف الأفضل</b>.',
+    help_s1_4:'صفِّ بالشرائح (الكل / الفروقات / متساوية…)، ابحث بمفتاح <span class="kbd">/</span>، رتّب بالنقر على رؤوس الأعمدة.',
+    help_s1_5:'صدّر: <b>نسخ</b> إلى الحافظة، <b>طباعة</b>/PDF، <b>CSV</b>، أو <b>Excel</b> ملون مع ورقة ملخص.',
+    help_s2:'كيف تعد ملف الإكسل',
+    help_s2_copy:'مثاليًا: <b>سطر ترويسة</b> في الأعلى ثم سطر لكل عنصر. سطر العنوان (اللافتة) أعلاه لا يمثل مشكلة: يتم تجاهله تلقائيًا. مثال:',
+    help_th_ref:'المرجع', help_th_name:'التعيين', help_th_stock:'المخزون المتاح', help_th_price:'سعر الوحدة (بدون ضريبة)',
+    help_s2_copy2:'في هذا المثال، تتم مقارنة عمود <b>المخزون المتاح</b> افتراضيًا. لمقارنة <b>الأسعار</b> بدلاً منه، افتح «ضبط الأعمدة…»، اختر عمود <b>سعر الوحدة</b> كقيمة ثم النوع «سعر» — سيُكتشف رمز «درهم» تلقائيًا.',
+    help_s2_copy3:'الترويسات المعترف بها تلقائيًا:',
+    help_tag_id:'<b>المعرّف:</b> كود، مرجع، ref، sku، باركود، ean، معرّف…',
+    help_tag_name:'<b>التعيين:</b> designation، اسم، تسمية، وصف، منتج…',
+    help_tag_stock:'<b>قيمة المخزون:</b> مخزون، كمية، qty، متاح، رصيد…',
+    help_tag_price:'<b>قيمة السعر:</b> سعر، سعر الوحدة، تعريفة، تكلفة…',
+    help_s3:'معلومات مفيدة',
+    help_note_num:'<b>الأرقام:</b> الفواصل العشرية (12,50) وفواصل الآلاف (1 234,56) تُقرأ تلقائيًا.',
+    help_note_cur:'<b>العملات:</b> إذا احتوت الترويسة على «درهم» أو «$» أو «€» (مثال «سعر الوحدة»، «سعر بالدرهم»)، يتم اكتشاف الرمز تلقائيًا.',
+    help_note_cmp:'<b>المقارنة:</b> يُقارن الملفان <b>برمز المنتج</b> — يجب أن يوجد نفس المعرّف في الملفين.',
+    help_note_one:'<b>قيمة واحدة فقط:</b> تتم مقارنة عمود «قيمة» واحد في كل مرة. إذا كان ملفك يحتوي مخزونًا وسعرًا معًا، يُختار عمود <b>المخزون</b> افتراضيًا. افتح «ضبط الأعمدة…» لمقارنة عمود آخر.',
+    help_s4:'مشاكل شائعة (الأسئلة الشائعة)',
+    faq1_q:'الموقع لا يجد أعمدة الملف تلقائيًا.',
+    faq1_a:'افتح «ضبط الأعمدة…»، اختر سطر الترويسة ثم عمود المعرّف والقيمة. افعل ذلك لكل ملف.',
+    faq2_q:'تُعرض الأسعار كمخزون (أو العكس).',
+    faq2_a:'يُستنتج النوع من اسم العمود. افتح «ضبط الأعمدة…» واختر «مخزون / كمية» أو «سعر» يدويًا.',
+    faq3_q:'ملفي يحتوي مخزونًا وسعرًا معًا — أيهما يُقارن؟',
+    faq3_a:'افتراضيًا عمود <b>المخزون</b>. لمقارنة الأسعار، اختر عمود السعر في «ضبط الأعمدة…».',
+    faq4_q:'تظهر الأسعار بدون رمز أو برمز خاطئ.',
+    faq4_a:'في «ضبط الأعمدة…»، حدد العملة (درهم، €، $). كما تُكتشف تلقائيًا إذا احتوت الترويسة على «سعر بالدرهم»، «دولار»، «€»…',
+    faq5_q:'قرأ الموقع ترويسة «سعر الوحدة» كمخزون.',
+    faq5_a:'عمود المخزون له الأولوية. إذا لم يوجد عمود كمية، يُستخدم عمود السعر ويتبدل تلقائيًا إلى وضع «سعر» مع العملة الصحيحة.',
+    faq6_q:'بقيت الرموز «(1)» في اسم الملف؟',
+    faq6_a:'لا — يُستخدم محتوى الملف فقط. الاسم المعروض للمعلومات فقط.',
+    faq7_q:'ملفاتي كبيرة / قائمتي طويلة جدًا.',
+    faq7_a:'الحد هو 50 ميغا لكل ملف. تعرض القائمة 400 صف في المرة: انقر «عرض المزيد» لمزيد.',
+    faq8_q:'كيف أقارن الفروقات فقط؟',
+    faq8_a:'انقر شريحة «الفروقات» أعلى الجدول، أو اختر «الفروقات فقط» عند التصدير إلى Excel.',
+    help_close:'فهمت'
+  }
+};
+function t(key){
+  const dict = T[lang] || T.fr;
+  return dict[key] !== undefined ? dict[key] : (T.fr[key] !== undefined ? T.fr[key] : key);
+}
+function tF(key, params){
+  let s = t(key);
+  if(params){
+    for(const k of Object.keys(params)) s = s.replace(new RegExp('\\{' + k + '\\}', 'g'), params[k]);
+  }
+  return s;
+}
+function sname(which){ return which === '1' ? t('file1') : t('file2'); }
 let data1 = null;
 let data2 = null;
 let merged = [];
@@ -699,7 +1273,11 @@ let probeMeta = {};
 let mapSide = '1';
 let compType = 'stock';
 let compSym = '';
-const SYMBOL_UNIT = { '€':'euros', 'DH':'dirhams', '$':'dollars' };
+let warnThreshold = Number(localStorage.getItem('comp-warn-threshold') || 5);
+let gapThreshold = Number(localStorage.getItem('comp-gap-threshold') || 20);
+let activeDetailCode = null;
+let qualityIssues = [];
+let rowNotes = JSON.parse(localStorage.getItem('comp-row-notes') || '{}');
 const PAGE = 400;
 
 /* ============================================================
@@ -713,11 +1291,12 @@ function canonicalCode(c){
   return String(c).trim().toUpperCase();
 }
 function compNoun(){
-  return compType === 'price' ? 'Prix' : compType === 'other' ? 'Valeur' : 'Stock';
+  return compType === 'price' ? t('noun_price') : compType === 'other' ? t('noun_value') : t('noun_stock');
 }
+const SYMBOL_UNIT = { '€':'unit_euros', 'DH':'unit_dirhams', '$':'unit_dollars' };
 function compUnit(){
-  if(compType === 'stock') return 'unités';
-  return SYMBOL_UNIT[compSym] || compSym || 'unités';
+  if(compType === 'stock') return t('unit_units');
+  return t(SYMBOL_UNIT[compSym]) || compSym || t('unit_units');
 }
 function detectPriceMeta(txt){
   const s = normalizeHeader(txt || '');
@@ -854,8 +1433,10 @@ function buildOutput(rows, headerIdx, codeCol, nameCol, stockCol){
     const name = nameCol !== -1 ? r[nameCol] : '';
     const stockRaw = r[stockCol];
     let stock = parseNumber(stockRaw);
+    const invalidValue = isNaN(stock) && String(stockRaw || '').trim() !== '';
     if(isNaN(stock)) stock = 0;
-    out.push({ code: canonicalCode(codeStr), name: name ? String(name).trim() : '', stock });
+    out.push({ code: canonicalCode(codeStr), name: name ? String(name).trim() : '', stock, invalidValue,
+      raw: r, headers: rows[headerIdx] || [] });
   }
   return out;
 }
@@ -877,39 +1458,45 @@ function applyParsed(which, det, explicit){
   syncCompControls();
   const out = buildOutput(rows, det.headerIdx, det.codeCol, det.nameCol, det.stockCol);
   if(!out.length){
-    setStatus(which, 'En-tête trouvé mais aucune ligne de données  — vérifiez le choix des colonnes.', 'err');
-    toast('Aucune ligne lue pour ' + SNAME[which] + ' : ouvrez la configuration des colonnes.', 'err');
+    setStatus(which, t('status_err_header'), 'err');
+    toast(tF('toast_nolines', { side: sname(which) }), 'err');
     openMapping(which);
     return;
   }
   if(which === '1') data1 = out; else data2 = out;
+  const dupes = out.reduce((m, x) => m.set(x.code, (m.get(x.code) || 0) + 1), new Map());
+  const duplicateCount = [...dupes.values()].filter(n => n > 1).reduce((a, n) => a + n - 1, 0);
+  const invalidCount = out.filter(x => x.invalidValue).length;
+  qualityIssues = qualityIssues.filter(x => x.side !== which);
+  if(duplicateCount) qualityIssues.push({side:which, type:'duplicate', count:duplicateCount});
+  if(invalidCount) qualityIssues.push({side:which, type:'invalid', count:invalidCount});
   probeMeta[which] = det;
   document.getElementById('mapBtn' + which).disabled = false;
 
   const head = (rows[det.headerIdx] || []).map(h => String(h || '').trim());
   const label = c => (c !== -1 && head[c]) ? head[c] : 'n°' + (c + 1);
-  let statusTxt = out.length + ' articles chargés · Code=' + label(det.codeCol) +
-    (det.nameCol !== -1 ? ', Nom=' + label(det.nameCol) : '') + ', Valeur=' + label(det.stockCol);
+  let statusTxt = tF('status_items', { n: out.length, code: t('status_code') + label(det.codeCol), name: (det.nameCol !== -1 ? t('status_name') + label(det.nameCol) : ''), val: t('status_value') + label(det.stockCol) });
   setStatus(which, statusTxt, 'ok');
-  toast(SNAME[which] + ' : ' + out.length + ' articles importés', 'ok');
+  toast(tF('toast_imported', { side: sname(which), n: out.length }), 'ok');
   recompute();
 }
 
 function clearSide(which){
   if(which === '1') data1 = null; else data2 = null;
   merged = [];
+  qualityIssues = qualityIssues.filter(x => x.side !== which);
 }
 
 function handleFile(file, which){
   if(file.size > 50 * 1024 * 1024){
-    setStatus(which, 'Fichier trop volumineux (50 Mo max).', 'err');
+    setStatus(which, t('status_err_big'), 'err');
     return;
   }
   const nameEl = document.getElementById('name' + which);
   const drop = document.getElementById('drop' + which);
   nameEl.textContent = file.name + (file.size ? ' · ' + fmtSize(file.size) : '');
   drop.classList.add('has-file');
-  setStatus(which, 'Lecture en cours…', 'loading');
+  setStatus(which, t('status_reading'), 'loading');
 
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -919,8 +1506,8 @@ function handleFile(file, which){
         const res = sheetToRows(wb);
         const rows = res.rows, sheetName = res.name;
         if(!rows.length){
-          setStatus(which, 'Fichier vide ou illisible.', 'err');
-          toast('Fichier vide ou illisible.', 'err');
+          setStatus(which, t('status_err_empty'), 'err');
+          toast(t('toast_empty'), 'err');
           return;
         }
         rawSheets[which] = rows;
@@ -932,19 +1519,19 @@ function handleFile(file, which){
 applyParsed(which, { headerIdx: det.idx, codeCol: det.codeCol, nameCol: det.nameCol, stockCol: det.stockCol, isPrice: det.isPrice });
         } else {
           clearSide(which);
-          setStatus(which, 'En-tête non reconnu sur la feuille «' + sheetName + '» — configurez les colonnes.', 'err');
-          toast('Colonnes non détectées pour ' + SNAME[which] + ' : configuration manuelle demandée.', 'err');
+          setStatus(which, tF('status_err_map', { sheet: sheetName }), 'err');
+          toast(tF('toast_mapneed', { side: sname(which) }), 'err');
           recompute();
           openMapping(which);
         }
       }catch(err){
         console.error(err);
-        setStatus(which, 'Impossible de lire ce fichier.', 'err');
-        toast('Fichier illisible : ' + err.message, 'err');
+        setStatus(which, t('status_err_read'), 'err');
+        toast(tF('toast_big', { msg: err.message }), 'err');
       }
     }, 60);
   };
-  reader.onerror = () => setStatus(which, 'Erreur de lecture du fichier.', 'err');
+  reader.onerror = () => setStatus(which, t('status_err_read'), 'err');
   reader.readAsArrayBuffer(file);
 }
 
@@ -972,7 +1559,7 @@ function populateColumnSelects(which, rowIdx){
     els.innerHTML = '';
     if(allowEmpty){
       const o = document.createElement('option');
-      o.value = '-1'; o.textContent = '— Ignorer / pas de colonne —';
+      o.value = '-1'; o.textContent = t('map_ignore');
       els.appendChild(o);
     }
     cells.forEach((c, i) => {
@@ -980,7 +1567,7 @@ function populateColumnSelects(which, rowIdx){
       if(txt === '') return;
       const o = document.createElement('option');
       o.value = String(i);
-      o.textContent = '«' + txt.slice(0, 34) + '»' + (txt.length > 34 ? '…' : '') + '  (col. ' + (i + 1) + ')';
+      o.textContent = '«' + txt.slice(0, 34) + '»' + (txt.length > 34 ? '…' : '') + '  (' + tF('map_col', { n: i + 1 }) + ')';
       els.appendChild(o);
     });
     let pre = findColumn(cells, keys);
@@ -995,7 +1582,7 @@ function populateColumnSelects(which, rowIdx){
     if(txt === '') return;
     const o = document.createElement('option');
     o.value = String(i);
-    o.textContent = '«' + txt.slice(0, 34) + '»' + (txt.length > 34 ? '…' : '') + '  (col. ' + (i + 1) + ')';
+    o.textContent = '«' + txt.slice(0, 34) + '»' + (txt.length > 34 ? '…' : '') + '  (' + tF('map_col', { n: i + 1 }) + ')';
     stockEl.appendChild(o);
   });
   let preStock = findColumn(cells, QUANTITY_KEYS);
@@ -1022,12 +1609,12 @@ function updateSymField(){
 
 function openMapping(which){
   if(!rawSheets[which]){
-    toast('Chargez d\'abord un fichier pour ' + SNAME[which] + '.', 'info');
+    toast(tF('toast_needfile', { side: sname(which) }), 'info');
     return;
   }
   mapSide = which;
-  document.getElementById('mapSideTitle').textContent = 'Configurer les colonnes — ' + SNAME[which];
-  document.getElementById('mapSideName').textContent = SNAME[which] + ' (feuille chargée)';
+  document.getElementById('mapSideTitle').textContent = tF('map_side_title', { side: sname(which) });
+  document.getElementById('mapSideName').textContent = sname(which) + ' (' + t('map_side_loaded') + ')';
 
   const hl = document.getElementById('mapHeaderRow');
   hl.innerHTML = '';
@@ -1039,6 +1626,17 @@ function openMapping(which){
   });
   hl.value = String(probeMeta[which] && probeMeta[which].idx !== undefined ? probeMeta[which].idx : 0);
   populateColumnSelects(which, Number(hl.value));
+  const presetKey = 'comp-map-' + (rawSheets[which][Number(hl.value)] || []).map(normalizeHeader).join('|');
+  try{
+    const saved = JSON.parse(localStorage.getItem(presetKey) || 'null');
+    if(saved){
+      document.getElementById('mapCode').value = String(saved.codeCol);
+      document.getElementById('mapName').value = String(saved.nameCol);
+      document.getElementById('mapStock').value = String(saved.stockCol);
+      compType = saved.compType || compType; compSym = saved.compSym || compSym; syncCompControls();
+      toast('Configuration de colonnes enregistrée retrouvée.', 'info');
+    }
+  }catch(_){ }
 
   document.getElementById('mappingModal').classList.add('open');
 }
@@ -1055,9 +1653,11 @@ function applyMapping(){
   if(compType === 'price' && !compSym) compSym = '€';
   if(compType === 'stock') compSym = '';
   if(Number.isNaN(codeCol) || codeCol < 0 || Number.isNaN(stockCol) || stockCol < 0){
-    toast('Sélectionnez une colonne identifiant et une colonne valeur.', 'err');
+    toast(t('toast_mapincomplete'), 'err');
     return;
   }
+  const presetKey = 'comp-map-' + (rawSheets[which][headerIdx] || []).map(normalizeHeader).join('|');
+  localStorage.setItem(presetKey, JSON.stringify({codeCol,nameCol,stockCol,compType,compSym}));
   closeMapping();
   document.getElementById('mapBtn' + which).disabled = false;
   applyParsed(which, {headerIdx, codeCol, nameCol, stockCol}, true);
@@ -1111,7 +1711,7 @@ const DEMO_2 = [
 function loadRowsFromArray(arr, which){
   const nameEl = document.getElementById('name' + which);
   const drop = document.getElementById('drop' + which);
-  nameEl.textContent = 'Exemple ' + SNAME[which] + ' — données de test fictives';
+  nameEl.textContent = sname(which) + ' — ' + t('demo_tag');
   drop.classList.add('has-file');
   rawSheets[which] = arr;
   const det = probeHeader(arr);
@@ -1122,7 +1722,7 @@ function loadRowsFromArray(arr, which){
 function loadDemo(){
   loadRowsFromArray(DEMO_1, '1');
   loadRowsFromArray(DEMO_2, '2');
-  toast('Données d\'exemple chargées — la ligne de titre a été ignorée automatiquement.', 'ok');
+  toast(t('toast_demo'), 'ok');
 }
 
 /* ============================================================
@@ -1132,12 +1732,12 @@ function recompute(){
   if(!data1 || !data2){
     document.getElementById('kdash').classList.remove('visible');
     document.getElementById('insights').classList.remove('visible');
-    document.getElementById('rowCount').textContent = 'Un seul fichier chargé — chargez l\'autre pour comparer.';
+    document.getElementById('rowCount').textContent = t('toast_onedone');
     document.getElementById('downloadBtn').disabled = true;
     document.getElementById('copyBtn').disabled = true;
     document.getElementById('csvBtn').disabled = true;
     document.getElementById('printBtn').disabled = true;
-    document.getElementById('footNote').textContent = 'En attente du second fichier pour lancer la comparaison.';
+    document.getElementById('footNote').textContent = t('toast_waiting');
     applyListState();
     return;
   }
@@ -1147,6 +1747,9 @@ function recompute(){
   setMergedFrom(map, data2, '2');
   merged = Array.from(map.values());
   renderLimit = PAGE;
+
+  rememberComparison();
+  renderQuality();
 
   updateChipsCounts();
   renderDash();
@@ -1160,14 +1763,20 @@ function setMergedFrom(map, arr, src){
     if(map.has(item.code)){
       const e = map.get(item.code);
       e[src] = item.stock;
+      e['name' + src] = item.name;
+      e['raw' + src] = item.raw;
+      e['headers' + src] = item.headers;
       if(!e.name && item.name) e.name = item.name;
       e.source = 'both';
     } else {
       map.set(item.code, {
         code: item.code,
         name: item.name,
+        ['name' + src]: item.name,
         '1': src === '1' ? item.stock : 0,
         '2': src === '2' ? item.stock : 0,
+        ['raw' + src]: item.raw,
+        ['headers' + src]: item.headers,
         source: src
       });
     }
@@ -1177,6 +1786,31 @@ function setMergedFrom(map, arr, src){
 function val1(r){ return r['1']; }
 function val2(r){ return r['2']; }
 function diffValue(r){ return val2(r) - val1(r); }
+function percentDiff(r){
+  if(!val1(r)) return val2(r) ? null : 0;
+  return (diffValue(r) / Math.abs(val1(r))) * 100;
+}
+function fmtPct(n){ return n === null ? '—' : (n > 0 ? '+' : '') + n.toFixed(1) + '%'; }
+
+function renderQuality(){
+  const bar = document.getElementById('qualityBar');
+  const low = merged.filter(r => r.source === 'both' && (val1(r) <= warnThreshold || val2(r) <= warnThreshold)).length;
+  const big = merged.filter(r => r.source === 'both' && Math.abs(diffValue(r)) >= gapThreshold).length;
+  const nameMismatch = merged.filter(r => r.source === 'both' && r.name1 && r.name2 && normalizeHeader(r.name1) !== normalizeHeader(r.name2)).length;
+  const messages = qualityIssues.map(x => `${x.count} ${x.type === 'duplicate' ? 'code(s) dupliqué(s)' : 'valeur(s) non numérique(s)'} — Fichier ${x.side}`);
+  if(low) messages.push(`${low} article(s) au seuil d'alerte (≤ ${warnThreshold})`);
+  if(big) messages.push(`${big} écart(s) significatif(s) (≥ ${gapThreshold})`);
+  if(nameMismatch) messages.push(`${nameMismatch} désignation(s) différente(s) pour le même code`);
+  bar.classList.toggle('visible', messages.length > 0);
+  bar.innerHTML = messages.length ? `<b>Contrôles qualité :</b> ${messages.join(' · ')}` : '';
+}
+
+function rememberComparison(){
+  const history = JSON.parse(localStorage.getItem('comp-history') || '[]');
+  const entry = { at:new Date().toISOString(), file1:document.getElementById('name1').textContent || 'Fichier 1', file2:document.getElementById('name2').textContent || 'Fichier 2', total:merged.length, diffs:merged.filter(r => r.source === 'both' && val1(r) !== val2(r)).length };
+  if(!history.length || history[0].file1 !== entry.file1 || history[0].file2 !== entry.file2) history.unshift(entry);
+  localStorage.setItem('comp-history', JSON.stringify(history.slice(0, 12)));
+}
 
 function bestOf(r){
   if(val1(r) > val2(r)) return '1';
@@ -1194,7 +1828,7 @@ function availabilityOf(r){
 
 function bestLabel(r){
   const b = bestOf(r);
-  return b === '1' ? 'Fichier 1' : b === '2' ? 'Fichier 2' : 'Égal';
+  return b === '1' ? t('best_f1') : b === '2' ? t('best_f2') : t('best_eq');
 }
 
 function sumStock(arr, key){ return arr.reduce((a,r) => a + r[key], 0); }
@@ -1212,16 +1846,16 @@ function renderDash(){
 
   setVal('kpTotal', fmtInt(merged.length));
   setVal('kpBoth', fmtInt(both.length));
-  setVal('kpBothSub', both.length ? Math.round(both.length / merged.length * 100) + ' % du total' : '');
+  setVal('kpBothSub', both.length ? tF('kpi_pct_sub', { p: Math.round(both.length / merged.length * 100) }) : '');
   setVal('kpOnly1', fmtInt(only1.length));
-  setVal('kpOnly1Sub', 'total ' + fmtVal(sumStock(only1, '1')));
+  setVal('kpOnly1Sub', tF('kpi_total_sub2', { v: fmtVal(sumStock(only1, '1')) }));
   setVal('kpOnly2', fmtInt(only2.length));
-  setVal('kpOnly2Sub', 'total ' + fmtVal(sumStock(only2, '2')));
+  setVal('kpOnly2Sub', tF('kpi_total_sub2', { v: fmtVal(sumStock(only2, '2')) }));
   setVal('kpDiff', fmtInt(diffs.length));
-  setVal('kpDiffSub', fmtInt(equal) + ' égalités');
+  setVal('kpDiffSub', tF('kpi_equal_sub', { n: fmtInt(equal) }));
   setVal('kpOut', fmtInt(out.length));
-  setVal('kpOutLabel', compType === 'stock' ? 'Ruptures' : 'Valeurs à zéro');
-  setVal('kpOutSub', 'valeur = 0 au moins un côté');
+  setVal('kpOutLabel', compType === 'stock' ? t('kpi_out_stock') : t('kpi_out_value'));
+  setVal('kpOutSub', t('kpi_out_sub'));
 }
 
 function setVal(id, v){ document.getElementById(id).textContent = v; }
@@ -1229,7 +1863,8 @@ function setVal(id, v){ document.getElementById(id).textContent = v; }
 function fmtInt(n){
   if(Math.abs(n) >= 1000000) return (n/1000000).toFixed(2).replace(/\.?0+$/,'') + ' M';
   if(Math.abs(n) >= 100000) return (n/1000).toFixed(0) + ' k';
-  return n.toLocaleString('fr-FR');
+  const loc = lang === 'ar' ? 'ar-MA' : lang === 'en' ? 'en-GB' : 'fr-FR';
+  return n.toLocaleString(loc);
 }
 function fmtVal(n){
   return fmtInt(n) + (compSym ? ' ' + compSym : '');
@@ -1241,9 +1876,9 @@ function fmtVal(n){
 function drawDonut(){
   const svg = document.getElementById('donut');
   const segments = [
-    { label:'Fichier 1 meilleur', color:'#2F6F62', dark:'#5DB2A0', count:0 },
-    { label:'Fichier 2 meilleur', color:'#7B57A4', dark:'#A98DD0', count:0 },
-    { label:'Égal', color:'#9AA8B5', dark:'#56626E', count:0 }
+    { label:t('donut_r1'), color:'#2F6F62', dark:'#5DB2A0', count:0 },
+    { label:t('donut_r2'), color:'#7B57A4', dark:'#A98DD0', count:0 },
+    { label:t('donut_r3'), color:'#9AA8B5', dark:'#56626E', count:0 }
   ];
   merged.forEach(r => {
     const b = bestOf(r);
@@ -1275,7 +1910,7 @@ function drawDonut(){
     (paths || '') +
     `<circle cx="21" cy="21" r="9.5" fill="var(--panel)"/>` +
     `<text x="21" y="21" text-anchor="middle" dominant-baseline="central" style="font-size:6.5px;font-weight:800;fill:var(--ink)">${total}</text>` +
-    `<text x="21" y="26.5" text-anchor="middle" dominant-baseline="central" style="font-size:3px;fill:var(--ink-faint)">réf.</text>`;
+    `<text x="21" y="26.5" text-anchor="middle" dominant-baseline="central" style="font-size:3px;fill:var(--ink-faint)">${t('donut_ref')}</text>`;
 
   const legend = document.getElementById('donutLegend');
   legend.innerHTML = rSegs.map(s => `
@@ -1299,9 +1934,9 @@ function renderInsights(){
 
   if(total1 && total2 && total1 !== total2){
     const ratio = total1 / total2;
-    const who = ratio > 1 ? 'Fichier 1 détient plus (' + ratio.toFixed(2) + '× le Fichier 2)'
-               : 'Fichier 2 détient plus (' + (1/ratio).toFixed(2) + '× le Fichier 1)';
-    rows.push({ cls:'info', icon:'Σ', html:`<b>Volume global :</b> ${who} — <span class="mono">${fmtInt(total1)}</span> vs <span class="mono">${fmtInt(total2)}</span> ${compUnit()}.` });
+    const who = ratio > 1 ? tF('insight_vol1', { r: ratio.toFixed(2) })
+               : tF('insight_vol2', { r: (1/ratio).toFixed(2) });
+    rows.push({ cls:'info', icon:'Σ', html:`<b>${t('insight_vol_head')}</b> ${who} — <span class="mono">${fmtInt(total1)}</span> vs <span class="mono">${fmtInt(total2)}</span> ${compUnit()}.` });
   }
 
   const noStock = merged.filter(r => r.source === 'both' && val1(r) === 0 && val2(r) === 0);
@@ -1310,21 +1945,21 @@ function renderInsights(){
   const out1 = merged.filter(r => r.source === 'both' && val1(r) === 0 && val2(r) > 0);
   const out2 = merged.filter(r => r.source === 'both' && val2(r) === 0 && val1(r) > 0);
 
-  if(out1.length) rows.push({ cls:'alert', icon:'!', html:`<b>${fmtInt(out1.length)} produits en rupture dans le Fichier 1</b> mais disponibles dans le Fichier 2.` });
-  if(out2.length) rows.push({ cls:'alert', icon:'!', html:`<b>${fmtInt(out2.length)} produits en rupture dans le Fichier 2</b> mais disponibles dans le Fichier 1.` });
-  if(noStock.length) rows.push({ cls:'alert', icon:'!', html:`<b>${fmtInt(noStock.length)} références à zéro</b> dans les deux fichiers — à surveiller.` });
-  if(only1.length) rows.push({ cls:'info', icon:'?', html:`<b>${fmtInt(only1.length)} références</b> existent uniquement dans le Fichier 1.` });
-  if(only2.length) rows.push({ cls:'info', icon:'?', html:`<b>${fmtInt(only2.length)} références</b> existent uniquement dans le Fichier 2.` });
+  if(out1.length) rows.push({ cls:'alert', icon:'!', html:tF('insight_out1', { n:`<b>${fmtInt(out1.length)}</b>` }) });
+  if(out2.length) rows.push({ cls:'alert', icon:'!', html:tF('insight_out2', { n:`<b>${fmtInt(out2.length)}</b>` }) });
+  if(noStock.length) rows.push({ cls:'alert', icon:'!', html:tF('insight_zero', { n:`<b>${fmtInt(noStock.length)}</b>` }) });
+  if(only1.length) rows.push({ cls:'info', icon:'?', html:tF('insight_only1', { n:`<b>${fmtInt(only1.length)}</b>` }) });
+  if(only2.length) rows.push({ cls:'info', icon:'?', html:tF('insight_only2', { n:`<b>${fmtInt(only2.length)}</b>` }) });
 
   const bothRows = merged.filter(r => r.source === 'both');
   const gapRow = bothRows.length ? bothRows.reduce((b, r) => (Math.abs(diffValue(r)) > Math.abs(diffValue(b)) ? r : b)) : null;
   if(gapRow && val1(gapRow) !== val2(gapRow)){
-    const winner = val2(gapRow) > val1(gapRow) ? 'Fichier 2' : 'Fichier 1';
+    const winner = val2(gapRow) > val1(gapRow) ? t('file2') : t('file1');
     const val = Math.abs(diffValue(gapRow));
-    rows.push({ cls:'ok', icon:'↗', html:`<b>Plus gros écart :</b> <span class="mono">${escapeHtml(gapRow.code)}</span> — ${winner} a ${fmtInt(val)} unités de plus.` });
+    rows.push({ cls:'ok', icon:'↗', html:tF('insight_gap', { code:escapeHtml(gapRow.code), winner, v:fmtInt(val) }) });
   }
 
-  if(!rows.length) rows.push({ cls:'ok', icon:'✓', html:'Aucun point d\'attention particulier détecté.' });
+  if(!rows.length) rows.push({ cls:'ok', icon:'✓', html:t('insight_none') });
 
   list.innerHTML = rows.slice(0, 6).map(r => `
     <div class="insight ${r.cls}">
@@ -1345,6 +1980,7 @@ function matchesFilter(r){
     case 'only2': return r.source === '2';
     case 'diffs': return r.source === 'both' && val1(r) !== val2(r);
     case 'equal': return r.source === 'both' && val1(r) === val2(r);
+    case 'alert': return r.source === 'both' && (val1(r) <= warnThreshold || val2(r) <= warnThreshold || Math.abs(diffValue(r)) >= gapThreshold);
   }
   return true;
 }
@@ -1390,18 +2026,16 @@ function applyListState(){
   renderTable(visible);
   const total = merged.length;
   const shown = visible.length;
-  document.getElementById('rowCount').innerHTML =
-    `<b>${fmtInt(shown)}</b> ligne${shown > 1 ? 's' : ''} affichée${shown > 1 ? 's' : ''} sur <b>${fmtInt(total)}</b> codes` +
-    (shown < total ? ` <span style="color:var(--ink-faint)">— filtre ou recherche actif</span>` : '');
+  document.getElementById('rowCount').innerHTML = tF('count_line', { shown: fmtInt(shown), total: fmtInt(total) }) +
+    (shown < total ? ` <span style="color:var(--ink-faint)">${t('count_filter')}</span>` : '');
 
   const hasData = merged.length > 0;
-  ['downloadBtn','copyBtn','csvBtn','printBtn'].forEach(id => {
+  ['downloadBtn','copyBtn','csvBtn','printBtn','reportBtn'].forEach(id => {
     document.getElementById(id).disabled = !hasData;
   });
 
-  document.getElementById('footNote').textContent = hasData ?
-    'Export Excel : feuille « Comparaison » colorée (vert = valeur la plus élevée, jaune = la plus basse), feuille « Résumé » avec les statistiques globales.' :
-    (data1 && data2 ? 'Fichiers chargés mais aucune référence commune trouvée — ouvrez « Ajuster les colonnes » pour vérifier la détection.' : 'En attente des données…');
+  document.getElementById('footNote').textContent = hasData ? t('foot_main') :
+    (data1 && data2 ? t('foot_common') : t('foot_wait'));
 }
 
 function renderTable(visible){
@@ -1409,10 +2043,10 @@ function renderTable(visible){
   if(!visible.length){
     const bothLoaded = !!(data1 && data2);
     const msg = merged.length
-      ? 'Aucune ligne ne correspond au filtre ou à la recherche.'
+      ? t('empty_nomatch')
       : bothLoaded
-        ? 'Les deux fichiers sont chargés, mais aucune référence commune n\'a été trouvée. Cliquez sur « Ajuster les colonnes » pour vérifier les colonnes détectées.'
-        : 'Chargez les deux fichiers pour voir la comparaison.';
+        ? t('empty_nocommon')
+        : t('empty_load');
     holder.innerHTML = `<div class="empty-state">
       <div class="big"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></div>
       <div>${msg}</div>
@@ -1422,13 +2056,14 @@ function renderTable(visible){
 
   const noun = compNoun();
   const header = `<table><thead><tr>
-    <th data-sort="code">Code <span class="sort-arrow"></span></th>
-    <th data-sort="name">Nom <span class="sort-arrow"></span></th>
-    <th data-sort="v1" class="num" title="Fichier 1">${noun} 1 <span class="sort-arrow"></span></th>
-    <th data-sort="v2" class="num" title="Fichier 2">${noun} 2 <span class="sort-arrow"></span></th>
-    <th data-sort="diff" class="num">Écart <span class="sort-arrow"></span></th>
-    <th data-sort="best">Meilleur <span class="sort-arrow"></span></th>
-    <th class="num">Disponible</th>
+    <th data-sort="code">${t('th_code')} <span class="sort-arrow"></span></th>
+    <th data-sort="name">${t('th_name')} <span class="sort-arrow"></span></th>
+    <th data-sort="v1" class="num" title="${t('file_title')}">${noun} 1 <span class="sort-arrow"></span></th>
+    <th data-sort="v2" class="num" title="${t('file2_title')}">${noun} 2 <span class="sort-arrow"></span></th>
+    <th data-sort="diff" class="num">${t('th_diff')} <span class="sort-arrow"></span></th>
+    <th class="num">% écart</th>
+    <th data-sort="best">${t('th_best')} <span class="sort-arrow"></span></th>
+    <th class="num">${t('th_avail')}</th><th>Suivi</th>
   </tr></thead><tbody>`;
 
   const chunk = visible.slice(0, renderLimit);
@@ -1436,8 +2071,8 @@ function renderTable(visible){
 
   const totalVisible = visible.length;
   if(renderLimit < totalVisible){
-    rows += `<tr class="load-more-row"><td colspan="7">
-      <button id="showMoreBtn">Afficher la suite (${fmtInt(renderLimit)} / ${fmtInt(totalVisible)})</button>
+    rows += `<tr class="load-more-row"><td colspan="9">
+      <button id="showMoreBtn">${tF('more', { a: fmtInt(renderLimit), b: fmtInt(totalVisible) })}</button>
     </td></tr>`;
   }
   rows += '</tbody></table>';
@@ -1472,16 +2107,18 @@ function rowToHtml(r){
   const diff = diffValue(r);
   const diffCls = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : 'diff-zero';
   const diffTxt = diff > 0 ? '+' + fmtVal(diff) : fmtVal(diff);
+  const pct = percentDiff(r);
+  const tracked = rowNotes[r.code] ? '●' : 'Détail';
 
   const bestCls = best === '1' ? 'best-1' : best === '2' ? 'best-2' : 'best-egal';
   const bestTag = `<span class="best-tag ${bestCls}">${bestLabel(r)}</span>`;
 
   const avail = availabilityOf(r);
   const availCls = avail === 'both' ? 'src-both' : avail === '1' ? 'src-1' : avail === '2' ? 'src-2' : 'src-none';
-  const availTag = avail === 'both' ? '<span class="src-tag src-both">les deux</span>'
-    : avail === '1' ? '<span class="src-tag src-1">Fichier 1</span>'
-    : avail === '2' ? '<span class="src-tag src-2">Fichier 2</span>'
-    : '<span class="src-tag src-none">Aucun</span>';
+  const availTag = avail === 'both' ? `<span class="src-tag src-both">${t('avail_both2')}</span>`
+    : avail === '1' ? `<span class="src-tag src-1">${t('avail_1b')}</span>`
+    : avail === '2' ? `<span class="src-tag src-2">${t('avail_2b')}</span>`
+    : `<span class="src-tag src-none">${t('avail_none')}</span>`;
 
   return `<tr>
     <td class="col-code">${escapeHtml(r.code)}</td>
@@ -1489,8 +2126,10 @@ function rowToHtml(r){
     <td class="col-stock ${cls1}">${fmtVal(val1(r))}</td>
     <td class="col-stock ${cls2}">${fmtVal(val2(r))}</td>
     <td class="col-diff ${diffCls}">${diffTxt}</td>
+    <td class="col-diff ${diffCls}">${fmtPct(pct)}</td>
     <td>${bestTag}</td>
     <td style="text-align:right">${availTag}</td>
+    <td><button class="row-action" data-detail="${escapeHtml(r.code)}">${tracked}</button></td>
   </tr>`;
 }
 
@@ -1528,7 +2167,7 @@ function stateForExport(){
 
 function availLabel(row){
   const a = availabilityOf(row);
-  return a === 'both' ? 'Les deux' : a === '1' ? 'Fichier 1 seul' : a === '2' ? 'Fichier 2 seul' : 'Aucun';
+  return a === 'both' ? t('avail_both2') : a === '1' ? t('avail_1b') : a === '2' ? t('avail_2b') : t('avail_none');
 }
 
 function downloadExcel(){
@@ -1536,16 +2175,16 @@ function downloadExcel(){
   const scope = scopeEl ? scopeEl.value : 'filtered';
   if(scope === 'csv'){ exportCsv(); return; }
   const visible = stateForExport().visible;
-  if(!visible.length){ toast('Aucune donnée à exporter pour cette portée.', 'err'); return; }
+  if(!visible.length){ toast(t('toast_noexport'), 'err'); return; }
 
   const noun = compNoun();
-  const headers = ['Code','Nom', noun + ' Fichier 1', noun + ' Fichier 2','Écart','Meilleur côté','Disponible'];
+  const headers = [t('th_code'), t('th_name'), noun + ' ' + t('file1'), noun + ' ' + t('file2'), t('th_diff'), '% écart', t('exp_best'), t('th_avail'), 'Note'];
   const aoa = [headers];
   visible.forEach(row => {
-    aoa.push([row.code, row.name, val1(row), val2(row), diffValue(row), bestLabel(row), availLabel(row)]);
+    aoa.push([row.code, row.name, val1(row), val2(row), diffValue(row), percentDiff(row), bestLabel(row), availLabel(row), rowNotes[row.code] || '']);
   });
   const ws = XLSX.utils.aoa_to_sheet(aoa);
-  ws['!cols'] = [{wch:18},{wch:36},{wch:13},{wch:13},{wch:11},{wch:14},{wch:14}];
+  ws['!cols'] = [{wch:18},{wch:36},{wch:13},{wch:13},{wch:11},{wch:11},{wch:14},{wch:14},{wch:40}];
 
   for(let c = 0; c < headers.length; c++){
     const addr = XLSX.utils.encode_cell({r:0, c});
@@ -1568,7 +2207,7 @@ function downloadExcel(){
     if(val2(row) === 0 && row.source === 'both' && ws[a2]) ws[a2].s = { fill: RED_FILL, font: RED_FONT };
     if(ws[a1]) ws[a1].alignment = { horizontal:'right' };
     if(ws[a2]) ws[a2].alignment = { horizontal:'right' };
-    const ba = XLSX.utils.encode_cell({r, c:5});
+    const ba = XLSX.utils.encode_cell({r, c:6});
     if(ws[ba] && val1(row) !== val2(row)){
       ws[ba].s = val1(row) > val2(row)
         ? { fill: GREEN_FILL, font: GREEN_FONT }
@@ -1576,7 +2215,7 @@ function downloadExcel(){
     }
   });
   ws['!freeze'] = { xSplit: 0, ySplit: 1 };
-  ws['!autofilter'] = { ref: XLSX.utils.encode_range(XLSX.utils.decode_range('A1:G1')) };
+  ws['!autofilter'] = { ref: XLSX.utils.encode_range(XLSX.utils.decode_range('A1:I1')) };
 
   const only1 = merged.filter(r => r.source === '1');
   const only2 = merged.filter(r => r.source === '2');
@@ -1585,19 +2224,19 @@ function downloadExcel(){
   const equal = both.length - diffs.length;
 
   const summary = [
-    ['Résumé de la comparaison', ''],
-    ['Généré le', new Date().toLocaleString('fr-FR')],
+    [t('exp_sum_title'), ''],
+    [t('exp_gen_on'), new Date().toLocaleString(lang === 'ar' ? 'ar-MA' : lang === 'en' ? 'en-GB' : 'fr-FR')],
     ['', ''],
-    ['Indicateur', 'Valeur'],
-    ['Références totales', merged.length],
-    ['Présentes des deux côtés', both.length],
-    ['Uniquement dans Fichier 1', only1.length],
-    ['Uniquement dans Fichier 2', only2.length],
-    ['Écarts de stock', diffs.length],
-    ['Égalités', equal],
-    ['Ruptures (au moins un côté)', merged.filter(r => val1(r) === 0 || val2(r) === 0).length],
-    [compNoun() + ' total Fichier 1', sumStock(merged, '1')],
-    [compNoun() + ' total Fichier 2', sumStock(merged, '2')]
+    [t('exp_kpi_label'), t('exp_kpi_value')],
+    [t('kpi_total'), merged.length],
+    [t('kpi_both'), both.length],
+    [t('kpi_only1'), only1.length],
+    [t('kpi_only2'), only2.length],
+    [t('exp_kpi_diffs'), diffs.length],
+    [t('kpi_equal_sub_plain'), equal],
+    [t('exp_kpi_out'), merged.filter(r => val1(r) === 0 || val2(r) === 0).length],
+    [compNoun() + ' total ' + t('file1'), sumStock(merged, '1')],
+    [compNoun() + ' total ' + t('file2'), sumStock(merged, '2')]
   ];
   const ws2 = XLSX.utils.aoa_to_sheet(summary);
   ws2['!cols'] = [{wch:34},{wch:16}];
@@ -1609,19 +2248,19 @@ function downloadExcel(){
   }
 
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Comparaison');
-  XLSX.utils.book_append_sheet(wb, ws2, 'Résumé');
-  const fname = 'comparaison-stock-' + new Date().toISOString().slice(0,10) + '.xlsx';
+  XLSX.utils.book_append_sheet(wb, ws, t('exp_sheet1'));
+  XLSX.utils.book_append_sheet(wb, ws2, t('exp_sheet2'));
+  const fname = 'comparaison-' + new Date().toISOString().slice(0,10) + '.xlsx';
   XLSX.writeFile(wb, fname);
   closeExportModal();
-  toast('Export Excel généré (' + visible.length + ' lignes).', 'ok');
+  toast(tF('toast_excel_ok', { n: visible.length }), 'ok');
 }
 
 function exportCsv(){
   const visible = stateForExport().visible;
-  if(!visible.length){ toast('Aucune donnée à exporter.', 'err'); return; }
+  if(!visible.length){ toast(t('toast_noexport'), 'err'); return; }
   const noun = compNoun();
-  const headers = ['Code','Nom', noun + ' Fichier 1', noun + ' Fichier 2','Meilleur côté','Disponible'];
+  const headers = [t('th_code'), t('th_name'), noun + ' ' + t('file1'), noun + ' ' + t('file2'), t('exp_best'), t('th_avail')];
   const rows = visible.map(r => [r.code, r.name, val1(r), val2(r), bestLabel(r), availLabel(r)]);
   const csv = [headers, ...rows]
     .map(row => row.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(';'))
@@ -1633,11 +2272,11 @@ function exportCsv(){
   a.click();
   URL.revokeObjectURL(a.href);
   closeExportModal();
-  toast('Export CSV généré.', 'ok');
+  toast(t('toast_csv_ok'), 'ok');
 }
 
 function openExportModal(){
-  if(!merged.length){ toast('Chargez d\'abord les deux fichiers.', 'info'); return; }
+  if(!merged.length){ toast(t('toast_noloaded'), 'info'); return; }
   document.getElementById('exportModal').classList.add('open');
 }
 function closeExportModal(){ document.getElementById('exportModal').classList.remove('open'); }
@@ -1647,22 +2286,50 @@ function closeExportModal(){ document.getElementById('exportModal').classList.re
 ============================================================ */
 async function copyTable(){
   const visible = sortRows(getVisible());
-  if(!visible.length){ toast('Aucune donnée à copier.', 'info'); return; }
+  if(!visible.length){ toast(t('toast_nocopy'), 'info'); return; }
   const noun = compNoun();
-  const lines = ['Code\tNom\t' + noun + ' Fichier 1\t' + noun + ' Fichier 2\tMeilleur'];
+  const lines = [t('th_code') + '\t' + t('th_name') + '\t' + noun + ' ' + t('file1') + '\t' + noun + ' ' + t('file2') + '\t' + t('exp_best')];
   visible.forEach(r => {
     lines.push([r.code, r.name, val1(r), val2(r), bestLabel(r)].join('\t'));
   });
   try{
     await navigator.clipboard.writeText(lines.join('\n'));
-    toast('Tableau copié dans le presse-papiers (' + visible.length + ' lignes).', 'ok');
+    toast(tF('toast_copied', { n: visible.length }), 'ok');
   }catch{
-    toast('Impossible d\'accéder au presse-papiers.', 'err');
+    toast(t('toast_copyfail'), 'err');
   }
 }
 
 function printTable(){
   window.print();
+}
+
+function showDetail(code){
+  const r = merged.find(x => x.code === code); if(!r) return;
+  activeDetailCode = code;
+  document.getElementById('detailTitle').textContent = 'Détail — ' + r.code;
+  const sourceBox = (side) => {
+    const raw = r['raw' + side] || [], heads = r['headers' + side] || [];
+    const values = heads.map((h,i) => h && raw[i] !== undefined ? `<p><b>${escapeHtml(h)}:</b> ${escapeHtml(raw[i])}</p>` : '').filter(Boolean).join('') || '<p>Article absent de ce fichier.</p>';
+    return `<div class="detail-box"><h4>Fichier ${side}</h4>${values}</div>`;
+  };
+  document.getElementById('detailContent').innerHTML = `<p style="margin:0;color:var(--ink-soft)">${escapeHtml(r.name || 'Sans désignation')} · écart ${fmtVal(diffValue(r))} (${fmtPct(percentDiff(r))})</p><div class="detail-grid">${sourceBox('1')}${sourceBox('2')}</div>`;
+  document.getElementById('rowNote').value = rowNotes[code] || '';
+  document.getElementById('detailModal').classList.add('open');
+}
+function closeDetail(){ document.getElementById('detailModal').classList.remove('open'); activeDetailCode = null; }
+function openHistory(){
+  const history = JSON.parse(localStorage.getItem('comp-history') || '[]');
+  document.getElementById('historyList').innerHTML = history.length ? history.map(h => `<div class="detail-box" style="margin-bottom:9px"><b>${escapeHtml(h.file1)}</b><br><span style="color:var(--ink-soft)">vs ${escapeHtml(h.file2)} · ${h.total} références · ${h.diffs} écarts · ${new Date(h.at).toLocaleString()}</span></div>`).join('') : '<p class="desc">Aucune comparaison enregistrée pour le moment.</p>';
+  document.getElementById('historyModal').classList.add('open');
+}
+function closeHistory(){ document.getElementById('historyModal').classList.remove('open'); }
+function applyThresholds(){
+  warnThreshold = Math.max(0, Number(document.getElementById('warnThreshold').value) || 0);
+  gapThreshold = Math.max(0, Number(document.getElementById('gapThreshold').value) || 0);
+  localStorage.setItem('comp-warn-threshold', warnThreshold);
+  localStorage.setItem('comp-gap-threshold', gapThreshold);
+  renderQuality(); applyListState(); toast('Seuils appliqués.', 'ok');
 }
 
 /* ============================================================
@@ -1752,6 +2419,8 @@ document.querySelectorAll('#chips .chip').forEach(ch => {
 });
 
 document.querySelector('.table-scroll').addEventListener('click', e => {
+  const detail = e.target.closest('[data-detail]');
+  if(detail){ showDetail(detail.dataset.detail); return; }
   const th = e.target.closest('th[data-sort]');
   if(!th) return;
   const key = th.dataset.sort;
@@ -1770,6 +2439,15 @@ document.getElementById('exportScope').addEventListener('change', e => {
 });
 document.getElementById('copyBtn').addEventListener('click', copyTable);
 document.getElementById('printBtn').addEventListener('click', printTable);
+document.getElementById('reportBtn').addEventListener('click', printTable);
+document.getElementById('historyBtn').addEventListener('click', openHistory);
+document.getElementById('closeHistory').addEventListener('click', closeHistory);
+document.getElementById('historyModal').addEventListener('click', e => { if(e.target.id === 'historyModal') closeHistory(); });
+document.getElementById('clearHistory').addEventListener('click', () => { localStorage.removeItem('comp-history'); openHistory(); });
+document.getElementById('closeDetail').addEventListener('click', closeDetail);
+document.getElementById('detailModal').addEventListener('click', e => { if(e.target.id === 'detailModal') closeDetail(); });
+document.getElementById('saveNote').addEventListener('click', () => { if(activeDetailCode){ rowNotes[activeDetailCode] = document.getElementById('rowNote').value.trim(); if(!rowNotes[activeDetailCode]) delete rowNotes[activeDetailCode]; localStorage.setItem('comp-row-notes', JSON.stringify(rowNotes)); applyListState(); toast('Note enregistrée.', 'ok'); } closeDetail(); });
+document.getElementById('saveThresholds').addEventListener('click', applyThresholds);
 document.getElementById('csvBtn').addEventListener('click', () => {
   const input = document.querySelector('#exportScope input[value="csv"]');
   input.checked = true;
@@ -1799,6 +2477,10 @@ document.getElementById('mapBtn2').addEventListener('click', () => openMapping('
 document.getElementById('applyMappingBtn').addEventListener('click', applyMapping);
 document.getElementById('cancelMapping').addEventListener('click', closeMapping);
 document.getElementById('mappingModal').addEventListener('click', e => { if(e.target.id === 'mappingModal') closeMapping(); });
+document.querySelectorAll('.faq-item').forEach(item => {
+  const head = item.querySelector('.fq, .faq-q');
+  if(head) head.addEventListener('click', () => item.classList.toggle('open'));
+});
 document.getElementById('mapHeaderRow').addEventListener('change', () => {
   populateColumnSelects(mapSide, Number(document.getElementById('mapHeaderRow').value));
 });
@@ -1822,9 +2504,60 @@ document.addEventListener('keydown', e => {
   }
 });
 
+function initLangUI(){
+  const sel = document.getElementById('langSelect');
+  if(!sel) return;
+  sel.innerHTML = '';
+  Object.keys(LANGS).forEach(code => {
+    const o = document.createElement('option');
+    o.value = code;
+    o.textContent = LANGS[code];
+    sel.appendChild(o);
+  });
+  sel.value = lang;
+  sel.addEventListener('change', () => {
+    lang = sel.value;
+    localStorage.setItem('comp-lang', lang);
+    applyLang();
+  });
+}
+
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.title = t('app_title');
+  const langSel = document.getElementById('langSelect');
+  if(langSel && LANGS[lang]) langSel.value = lang;
+  if(langSel) langSel.title = t('lang_aria');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+
+  const mt = document.getElementById('mapType');
+  if(mt) mt.querySelectorAll('option').forEach(o => {
+    o.textContent = o.value === 'stock' ? t('map_type_stock') : o.value === 'price' ? t('map_type_price') : t('map_type_other');
+  });
+  const ms = document.getElementById('mapSymbol');
+  if(ms) ms.querySelectorAll('option').forEach(o => {
+    o.textContent = o.value === 'DH' ? t('map_symbol_dh') : o.value === '€' ? t('map_symbol_eur') : o.value === '$' ? t('map_symbol_usd') : t('map_symbol_none');
+  });
+
+  const mapSideName = document.getElementById('mapSideName');
+  if(mapSideName) mapSideName.textContent = sname(mapSide) + ' (' + t('map_side_loaded') + ')';
+
+  if(merged.length){ recompute(); }
+}
+
 setupDrop('drop1','file1','1');
 setupDrop('drop2','file2','2');
+initLangUI();
+document.getElementById('warnThreshold').value = warnThreshold;
+document.getElementById('gapThreshold').value = gapThreshold;
 initTheme();
+applyLang();
 applyListState();
 </script>
 </body>
