@@ -470,13 +470,13 @@
     <div class="kpi blue"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg></span><div class="k-label">Présents des deux côtés</div><div class="k-value" id="kpBoth">–</div><div class="k-sub" id="kpBothSub"></div></div>
     <div class="kpi teal"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 0 0 18z"/></svg></span><div class="k-label">Uniquement Fichier 1</div><div class="k-value" id="kpOnly1">–</div><div class="k-sub" id="kpOnly1Sub"></div></div>
     <div class="kpi purple"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 1 0 18z"/></svg></span><div class="k-label">Uniquement Fichier 2</div><div class="k-value" id="kpOnly2">–</div><div class="k-sub" id="kpOnly2Sub"></div></div>
-    <div class="kpi amber"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M5.5 21h13"/></svg></span><div class="k-label">Écarts de stock</div><div class="k-value" id="kpDiff">–</div><div class="k-sub" id="kpDiffSub"></div></div>
-    <div class="kpi red"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.6v.4"/></svg></span><div class="k-label">Ruptures</div><div class="k-value" id="kpOut">–</div><div class="k-sub">stock = 0 au moins un côté</div></div>
+    <div class="kpi amber"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M5.5 21h13"/></svg></span><div class="k-label">Écarts</div><div class="k-value" id="kpDiff">–</div><div class="k-sub" id="kpDiffSub"></div></div>
+    <div class="kpi red"><span class="k-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.6v.4"/></svg></span><div class="k-label" id="kpOutLabel">Ruptures</div><div class="k-value" id="kpOut">–</div><div class="k-sub" id="kpOutSub">stock = 0 au moins un côté</div></div>
   </div>
 
   <div class="insights" id="insights">
     <div class="card">
-      <h3>Répartition « Meilleur stock »</h3>
+      <h3>Répartition « Meilleur côté »</h3>
       <div class="donut-wrap">
         <svg id="donut" width="220" height="220" viewBox="0 0 42 42"></svg>
         <div class="donut-legend" id="donutLegend"></div>
@@ -531,7 +531,7 @@
 <div class="modal-overlay" id="exportModal">
   <div class="modal">
     <h3>Exporter en Excel</h3>
-    <p class="desc">Choisissez la portée de l'export. Le fichier contient les couleurs (vert / jaune), la colonne « Meilleur stock » et une feuille de résumé.</p>
+    <p class="desc">Choisissez la portée de l'export. Le fichier contient les couleurs (vert / jaune), la colonne « Meilleur côté » et une feuille de résumé.</p>
     <div class="fselect" id="exportScope">
       <label class="checked"><input type="radio" name="scope" value="filtered" checked>Comparaison complète<small>Lignes comparées (selon le filtre actif)</small></label>
       <label><input type="radio" name="scope" value="diffs">Uniquement les écarts<small>Lignes dont le stock diffère entre les deux fichiers</small></label>
@@ -548,23 +548,32 @@
 <div class="modal-overlay" id="mappingModal">
   <div class="modal">
     <h3 id="mapSideTitle">Configurer les colonnes</h3>
-    <p class="desc" id="mapDesc">L'en-tête n'a pas été reconnu automatiquement. Sélectionnez la ligne d'en-tête, puis les colonnes Code, Nom et Stock. Les colonnes correspondent au <b id="mapSideName"></b>.</p>
+    <p class="desc" id="mapDesc">L'en-tête n'a pas été reconnu automatiquement. Sélectionnez la ligne d'en-tête, puis la colonne identifiant, le libellé et la valeur à comparer. Les colonnes correspondent au <b id="mapSideName"></b>.</p>
     <div class="map-field">
       <label for="mapHeaderRow">Ligne d'en-tête</label>
       <select id="mapHeaderRow"></select>
+      <p class="note" style="margin-top:6px;">Astuce : si la ligne d'en-tête proposée est une ligne de titre (« FICHIER DE STOCK… »), choisissez la ligne suivante.</p>
     </div>
     <div class="map-field">
-      <label for="mapCode">Colonne Code *</label>
+      <label for="mapCode">Colonne identifiant *</label>
       <select id="mapCode"></select>
     </div>
     <div class="map-field">
-      <label for="mapName">Colonne Nom</label>
+      <label for="mapName">Colonne libellé</label>
       <select id="mapName"></select>
     </div>
     <div class="map-field">
-      <label for="mapStock">Colonne Quantité *</label>
+      <label for="mapStock">Colonne valeur à comparer *</label>
       <select id="mapStock"></select>
-      <p class="note" style="margin-top:6px;">Astuce : si la ligne d'en-tête proposée est une ligne de titre (« FICHIER DE STOCK… »), choisissez la ligne suivante.</p>
+      <p class="note" style="margin-top:6px;">Choisissez n'importe quelle colonne numérique : quantité, stock, prix, poids…</p>
+    </div>
+    <div class="map-field">
+      <label for="mapType">Type de comparaison</label>
+      <select id="mapType">
+        <option value="stock">Stock / Quantité</option>
+        <option value="price">Prix (€)</option>
+        <option value="other">Autre valeur libre</option>
+      </select>
     </div>
     <div class="modal-btns">
       <button id="cancelMapping">Annuler</button>
@@ -591,6 +600,7 @@ let renderLimit = 300;
 let rawSheets = {};
 let probeMeta = {};
 let mapSide = '1';
+let compType = 'stock';
 const PAGE = 400;
 
 /* ============================================================
@@ -602,6 +612,55 @@ function normalizeHeader(h){
 }
 function canonicalCode(c){
   return String(c).trim().toUpperCase();
+}
+function compNoun(){
+  return compType === 'price' ? 'Prix' : compType === 'other' ? 'Valeur' : 'Stock';
+}
+function compUnit(){
+  return compType === 'price' ? '€' : 'unités';
+}
+function parseNumber(v){
+  if(v === null || v === undefined || v === '') return NaN;
+  if(typeof v === 'number') return v;
+  let s = String(v).trim().replace(/\s/g, '');
+  if(s === '') return NaN;
+  const lastComma = s.lastIndexOf(',');
+  const lastDot = s.lastIndexOf('.');
+  if(lastComma > -1 && lastDot < lastComma){
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else {
+    s = s.replace(/,/g, '');
+  }
+  const n = Number(s);
+  return isNaN(n) ? NaN : n;
+}
+function isNumericValue(v){
+  return !isNaN(parseNumber(v));
+}
+function findNumericColumn(rows, dataStartIdx){
+  let maxC = 0;
+  for(let i = dataStartIdx; i < rows.length; i++){
+    if(rows[i] && rows[i].length > maxC) maxC = rows[i].length;
+  }
+  if(!maxC) return -1;
+  const scores = new Array(maxC).fill(0);
+  const counts = new Array(maxC).fill(0);
+  const limit = Math.min(rows.length, dataStartIdx + 15);
+  for(let i = dataStartIdx; i < limit; i++){
+    const r = rows[i] || [];
+    for(let c = 0; c < maxC; c++){
+      const v = r[c];
+      if(v === undefined || v === null || String(v).trim() === '') continue;
+      counts[c]++;
+      scores[c] += isNumericValue(v) ? 1 : -1;
+    }
+  }
+  let best = -1, bestScore = 0;
+  for(let c = 0; c < maxC; c++){
+    if(counts[c] < 2) continue;
+    if(scores[c] > bestScore){ bestScore = scores[c]; best = c; }
+  }
+  return best;
 }
 const CODE_KEYS = ['code','codearticle','reference','ref','sku','codeproduit','articlecode','codebarre','ean','ean13','id','identifiant'];
 const NAME_KEYS = ['designation','nom','name','description','libelle','produit','article','label','libelledesignation'];
@@ -633,7 +692,9 @@ function probeHeader(rows){
     const score = matched * 1000 + nonEmpty;
     if(!best || score > best.score) best = { idx:i, codeCol, nameCol, stockCol, cells: r };
   }
-  return best || { idx:0, codeCol:-1, nameCol:-1, stockCol:-1, cells: rows[0] || [] };
+  const res = best || { idx:0, codeCol:-1, nameCol:-1, stockCol:-1, cells: rows[0] || [] };
+  if(res.stockCol === -1) res.stockCol = findNumericColumn(rows, res.idx + 1);
+  return res;
 }
 
 /* ============================================================
@@ -678,7 +739,7 @@ function buildOutput(rows, headerIdx, codeCol, nameCol, stockCol){
     if(headNorm.includes(normalizeHeader(codeStr))) continue;
     const name = nameCol !== -1 ? r[nameCol] : '';
     const stockRaw = r[stockCol];
-    let stock = Number(String(stockRaw).replace(/[^0-9.\-]/g, ''));
+    let stock = parseNumber(stockRaw);
     if(isNaN(stock)) stock = 0;
     out.push({ code: canonicalCode(codeStr), name: name ? String(name).trim() : '', stock });
   }
@@ -702,7 +763,7 @@ function applyParsed(which, det){
   const head = (rows[det.headerIdx] || []).map(h => String(h || '').trim());
   const label = c => (c !== -1 && head[c]) ? head[c] : 'n°' + (c + 1);
   let statusTxt = out.length + ' articles chargés · Code=' + label(det.codeCol) +
-    (det.nameCol !== -1 ? ', Nom=' + label(det.nameCol) : '') + ', Quantité=' + label(det.stockCol);
+    (det.nameCol !== -1 ? ', Nom=' + label(det.nameCol) : '') + ', Valeur=' + label(det.stockCol);
   setStatus(which, statusTxt, 'ok');
   toast(SNAME[which] + ' : ' + out.length + ' articles importés', 'ok');
   recompute();
@@ -796,12 +857,25 @@ function populateColumnSelects(which, rowIdx){
       o.textContent = '«' + txt.slice(0, 34) + '»' + (txt.length > 34 ? '…' : '') + '  (col. ' + (i + 1) + ')';
       els.appendChild(o);
     });
-    const pre = findColumn(cells, keys);
+    let pre = findColumn(cells, keys);
     if(pre !== -1) els.value = String(pre);
   };
   optsFor(document.getElementById('mapCode'), CODE_KEYS, false);
   optsFor(document.getElementById('mapName'), NAME_KEYS, true);
-  optsFor(document.getElementById('mapStock'), STOCK_KEYS, false);
+  const stockEl = document.getElementById('mapStock');
+  stockEl.innerHTML = '';
+  cells.forEach((c, i) => {
+    const txt = String(c || '').trim();
+    if(txt === '') return;
+    const o = document.createElement('option');
+    o.value = String(i);
+    o.textContent = '«' + txt.slice(0, 34) + '»' + (txt.length > 34 ? '…' : '') + '  (col. ' + (i + 1) + ')';
+    stockEl.appendChild(o);
+  });
+  let preStock = findColumn(cells, STOCK_KEYS);
+  if(preStock === -1) preStock = findNumericColumn(rawSheets[which] || [], rowIdx + 1);
+  if(preStock !== -1) stockEl.value = String(preStock);
+  document.getElementById('mapType').value = compType;
 }
 
 function openMapping(which){
@@ -834,8 +908,9 @@ function applyMapping(){
   const codeCol = Number(document.getElementById('mapCode').value);
   const nameCol = Number(document.getElementById('mapName').value);
   const stockCol = Number(document.getElementById('mapStock').value);
+  compType = document.getElementById('mapType').value;
   if(Number.isNaN(codeCol) || codeCol < 0 || Number.isNaN(stockCol) || stockCol < 0){
-    toast('Sélectionnez une colonne Code et une colonne Quantité.', 'err');
+    toast('Sélectionnez une colonne identifiant et une colonne valeur.', 'err');
     return;
   }
   closeMapping();
@@ -994,12 +1069,14 @@ function renderDash(){
   setVal('kpBoth', fmtInt(both.length));
   setVal('kpBothSub', both.length ? Math.round(both.length / merged.length * 100) + ' % du total' : '');
   setVal('kpOnly1', fmtInt(only1.length));
-  setVal('kpOnly1Sub', 'stock total ' + fmtInt(sumStock(only1, '1')));
+  setVal('kpOnly1Sub', 'total ' + fmtVal(sumStock(only1, '1')));
   setVal('kpOnly2', fmtInt(only2.length));
-  setVal('kpOnly2Sub', 'stock total ' + fmtInt(sumStock(only2, '2')));
+  setVal('kpOnly2Sub', 'total ' + fmtVal(sumStock(only2, '2')));
   setVal('kpDiff', fmtInt(diffs.length));
   setVal('kpDiffSub', fmtInt(equal) + ' égalités');
   setVal('kpOut', fmtInt(out.length));
+  setVal('kpOutLabel', compType === 'stock' ? 'Ruptures' : 'Valeurs à zéro');
+  setVal('kpOutSub', 'valeur = 0 au moins un côté');
 }
 
 function setVal(id, v){ document.getElementById(id).textContent = v; }
@@ -1008,6 +1085,9 @@ function fmtInt(n){
   if(Math.abs(n) >= 1000000) return (n/1000000).toFixed(2).replace(/\.?0+$/,'') + ' M';
   if(Math.abs(n) >= 100000) return (n/1000).toFixed(0) + ' k';
   return n.toLocaleString('fr-FR');
+}
+function fmtVal(n){
+  return fmtInt(n) + (compType === 'price' ? ' €' : '');
 }
 
 /* ============================================================
@@ -1068,15 +1148,15 @@ function drawDonut(){
 function renderInsights(){
   const list = document.getElementById('insightList');
   const rows = [];
-
+  const noun = compNoun().toLowerCase();
   const total1 = sumStock(merged, '1');
   const total2 = sumStock(merged, '2');
 
   if(total1 && total2 && total1 !== total2){
     const ratio = total1 / total2;
-    const who = ratio > 1 ? 'Fichier 1 détient plus de stock (' + ratio.toFixed(2) + '× le Fichier 2)'
-               : 'Fichier 2 détient plus de stock (' + (1/ratio).toFixed(2) + '× le Fichier 1)';
-    rows.push({ cls:'info', icon:'Σ', html:`<b>Volume global :</b> ${who} — <span class="mono">${fmtInt(total1)}</span> vs <span class="mono">${fmtInt(total2)}</span> unités.` });
+    const who = ratio > 1 ? 'Fichier 1 détient plus (' + ratio.toFixed(2) + '× le Fichier 2)'
+               : 'Fichier 2 détient plus (' + (1/ratio).toFixed(2) + '× le Fichier 1)';
+    rows.push({ cls:'info', icon:'Σ', html:`<b>Volume global :</b> ${who} — <span class="mono">${fmtInt(total1)}</span> vs <span class="mono">${fmtInt(total2)}</span> ${compUnit()}.` });
   }
 
   const noStock = merged.filter(r => r.source === 'both' && val1(r) === 0 && val2(r) === 0);
@@ -1175,7 +1255,7 @@ function applyListState(){
   });
 
   document.getElementById('footNote').textContent = hasData ?
-    'Export Excel : feuille « Comparaison » colorée (vert = stock le plus élevé, jaune = le plus bas), feuille « Résumé » avec les statistiques globales.' :
+    'Export Excel : feuille « Comparaison » colorée (vert = valeur la plus élevée, jaune = la plus basse), feuille « Résumé » avec les statistiques globales.' :
     (data1 && data2 ? 'Fichiers chargés mais aucune référence commune trouvée — ouvrez « Ajuster les colonnes » pour vérifier la détection.' : 'En attente des données…');
 }
 
@@ -1195,11 +1275,12 @@ function renderTable(visible){
     return;
   }
 
+  const noun = compNoun();
   const header = `<table><thead><tr>
     <th data-sort="code">Code <span class="sort-arrow"></span></th>
     <th data-sort="name">Nom <span class="sort-arrow"></span></th>
-    <th data-sort="v1" class="num" title="Fichier 1">Stock 1 <span class="sort-arrow"></span></th>
-    <th data-sort="v2" class="num" title="Fichier 2">Stock 2 <span class="sort-arrow"></span></th>
+    <th data-sort="v1" class="num" title="Fichier 1">${noun} 1 <span class="sort-arrow"></span></th>
+    <th data-sort="v2" class="num" title="Fichier 2">${noun} 2 <span class="sort-arrow"></span></th>
     <th data-sort="diff" class="num">Écart <span class="sort-arrow"></span></th>
     <th data-sort="best">Meilleur <span class="sort-arrow"></span></th>
     <th class="num">Disponible</th>
@@ -1245,7 +1326,7 @@ function rowToHtml(r){
 
   const diff = diffValue(r);
   const diffCls = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : 'diff-zero';
-  const diffTxt = diff > 0 ? '+' + fmtInt(diff) : fmtInt(diff);
+  const diffTxt = diff > 0 ? '+' + fmtVal(diff) : fmtVal(diff);
 
   const bestCls = best === '1' ? 'best-1' : best === '2' ? 'best-2' : 'best-egal';
   const bestTag = `<span class="best-tag ${bestCls}">${bestLabel(r)}</span>`;
@@ -1260,8 +1341,8 @@ function rowToHtml(r){
   return `<tr>
     <td class="col-code">${escapeHtml(r.code)}</td>
     <td>${escapeHtml(r.name) || '<span style="color:var(--ink-faint)">—</span>'}</td>
-    <td class="col-stock ${cls1}">${fmtInt(val1(r))}</td>
-    <td class="col-stock ${cls2}">${fmtInt(val2(r))}</td>
+    <td class="col-stock ${cls1}">${fmtVal(val1(r))}</td>
+    <td class="col-stock ${cls2}">${fmtVal(val2(r))}</td>
     <td class="col-diff ${diffCls}">${diffTxt}</td>
     <td>${bestTag}</td>
     <td style="text-align:right">${availTag}</td>
@@ -1312,7 +1393,8 @@ function downloadExcel(){
   const visible = stateForExport().visible;
   if(!visible.length){ toast('Aucune donnée à exporter pour cette portée.', 'err'); return; }
 
-  const headers = ['Code','Nom','Stock Fichier 1','Stock Fichier 2','Écart','Meilleur stock','Disponible'];
+  const noun = compNoun();
+  const headers = ['Code','Nom', noun + ' Fichier 1', noun + ' Fichier 2','Écart','Meilleur côté','Disponible'];
   const aoa = [headers];
   visible.forEach(row => {
     aoa.push([row.code, row.name, val1(row), val2(row), diffValue(row), bestLabel(row), availLabel(row)]);
@@ -1369,8 +1451,8 @@ function downloadExcel(){
     ['Écarts de stock', diffs.length],
     ['Égalités', equal],
     ['Ruptures (au moins un côté)', merged.filter(r => val1(r) === 0 || val2(r) === 0).length],
-    ['Stock total Fichier 1', sumStock(merged, '1')],
-    ['Stock total Fichier 2', sumStock(merged, '2')]
+    [compNoun() + ' total Fichier 1', sumStock(merged, '1')],
+    [compNoun() + ' total Fichier 2', sumStock(merged, '2')]
   ];
   const ws2 = XLSX.utils.aoa_to_sheet(summary);
   ws2['!cols'] = [{wch:34},{wch:16}];
@@ -1393,7 +1475,8 @@ function downloadExcel(){
 function exportCsv(){
   const visible = stateForExport().visible;
   if(!visible.length){ toast('Aucune donnée à exporter.', 'err'); return; }
-  const headers = ['Code','Nom','Stock Fichier 1','Stock Fichier 2','Meilleur','Disponible'];
+  const noun = compNoun();
+  const headers = ['Code','Nom', noun + ' Fichier 1', noun + ' Fichier 2','Meilleur côté','Disponible'];
   const rows = visible.map(r => [r.code, r.name, val1(r), val2(r), bestLabel(r), availLabel(r)]);
   const csv = [headers, ...rows]
     .map(row => row.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(';'))
@@ -1420,7 +1503,8 @@ function closeExportModal(){ document.getElementById('exportModal').classList.re
 async function copyTable(){
   const visible = sortRows(getVisible());
   if(!visible.length){ toast('Aucune donnée à copier.', 'info'); return; }
-  const lines = ['Code\tNom\tStock Fichier 1\tStock Fichier 2\tMeilleur'];
+  const noun = compNoun();
+  const lines = ['Code\tNom\t' + noun + ' Fichier 1\t' + noun + ' Fichier 2\tMeilleur'];
   visible.forEach(r => {
     lines.push([r.code, r.name, val1(r), val2(r), bestLabel(r)].join('\t'));
   });
